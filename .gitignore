@@ -1,4 +1,5 @@
 node_modules/
-.envrc
+.env
 secrets/
 package-lock.json
+tmp/
