@@ -1,0 +1,4 @@
+node_modules/
+.envrc
+secrets/
+package-lock.json
