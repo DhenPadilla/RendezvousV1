@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const db = require("../pgAdaptor").db;
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean } = graphql;
-const { TeemType } = require("./types");
+const { TeemType, UserType } = require("./types");
 
 const RootMutation = new GraphQLObjectType({
     name: "RootMutationType",
@@ -24,6 +24,33 @@ const RootMutation = new GraphQLObjectType({
                     args.description
                 ];
 
+                return db
+                    .one(query, values)
+                    .then(res => res)
+                    .catch(err => err);
+            }
+        },
+        addUser: {
+            type: UserType,
+            args: {
+                first_name: { type: GraphQLString },
+                last_name: { type: GraphQLString },
+                username: { type: GraphQLString },
+                email: { type: GraphQLString },
+                last_logged_in: { type: GraphQLString }
+            },
+            resolve(parentValue, args) {
+                const query = `INSERT INTO users(first_name, last_name, username, email, joined, last_logged_in) 
+                               VALUES ($1, $2, $3, $4, $5, $6) RETURNING username`;
+                const values = [
+                    args.first_name,
+                    args.last_name,
+                    args.username,
+                    args.email,
+                    new Date(),
+                    new Date(),
+                ];
+                
                 return db
                     .one(query, values)
                     .then(res => res)
