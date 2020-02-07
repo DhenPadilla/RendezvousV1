@@ -1,6 +1,6 @@
 const graphql = require("graphql");
 const db = require("../pgAdaptor").db;
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean } = graphql;
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLInt } = graphql;
 const { TeemType, UserType } = require("./types");
 
 const RootMutation = new GraphQLObjectType({
@@ -37,11 +37,12 @@ const RootMutation = new GraphQLObjectType({
                 last_name: { type: GraphQLString },
                 username: { type: GraphQLString },
                 email: { type: GraphQLString },
-                last_logged_in: { type: GraphQLString }
+                last_logged_in: { type: GraphQLString },
+                fb_id: { type: GraphQLInt }
             },
             resolve(parentValue, args) {
-                const query = `INSERT INTO users(first_name, last_name, username, email, joined, last_logged_in) 
-                               VALUES ($1, $2, $3, $4, $5, $6) RETURNING username`;
+                const query = `INSERT INTO users(first_name, last_name, username, email, joined, last_logged_in, fb_id) 
+                               VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING username`;
                 const values = [
                     args.first_name,
                     args.last_name,
@@ -49,6 +50,7 @@ const RootMutation = new GraphQLObjectType({
                     args.email,
                     new Date(),
                     new Date(),
+                    args.fb_id
                 ];
                 
                 return db
