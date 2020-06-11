@@ -5,20 +5,24 @@ const cors = require('cors');
 const path = require('path');
 
 // Database
-const db = require('./config/db');
+const db = require('./config/dbConfig');
 
 // Test DB
-
 db.authenticate()
 .then(() => console.log('Database connected...'))
 .catch(err => console.log('Error: ' + err));
 
 const app = express();
+app.use(express.json());
 
 app.get('/', (req, res) => res.send('Welcome to Rendezvous.'));
 
+// app.get('/users/register', (req, res) => {
+    // res.
+// })
+
 // ROUTES
-app.use('/users', require('./routes/users'));
+app.use('/user', require('./routes/user'));
 
 
 
