@@ -22,10 +22,22 @@ app.get('/', (req, res) => res.send('Welcome to Rendezvous.'));
 // })
 
 // ROUTES
-app.use('/user', require('./routes/user'));
+
+const user = require('./routes/user');
+const auth = require('./auth');
+
+app.use('/user', user);
+app.use('/auth', auth);
 
 
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, console.log(`Server started on port ${PORT}`));
+
+app.use(function(err, req, res, next) {
+    res.json({
+        message: err.message,
+        error: req.app.get('env') === 'dev' ? err : {}
+    });
+})
