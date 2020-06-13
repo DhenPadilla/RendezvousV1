@@ -1,6 +1,7 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
 
@@ -14,14 +15,11 @@ db.authenticate()
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
-app.get('/', (req, res) => res.send('Welcome to Rendezvous.'));
-
-// app.get('/users/register', (req, res) => {
-    // res.
-// })
 
 // ROUTES
+app.get('/', (req, res) => res.send('Welcome to Rendezvous.'));
 
 const user = require('./routes/user');
 const auth = require('./auth');
