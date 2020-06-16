@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
+const Pusher = require('pusher');
 
 // Database
 const db = require('./config/dbConfig');
-
 // Test DB
 db.authenticate()
 .then(() => console.log('Database connected...'))
@@ -16,18 +16,22 @@ db.authenticate()
 const app = express();
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
+// to Allow CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+    );
+    next();
+});
 
 // ROUTES
 app.get('/', (req, res) => res.send('Welcome to Rendezvous.'));
-
-const user = require('./routes/user');
-const auth = require('./auth');
-
-app.use('/user', user);
-app.use('/auth', auth);
-
-
+require('./routes')(app); // configure our routes
 
 const PORT = process.env.PORT || 5000;
 
