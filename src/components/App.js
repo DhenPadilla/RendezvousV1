@@ -79,7 +79,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let pusher = new Pusher('c6bf44aab148caef23ce', {
+    let pusher = new Pusher(process.env.REACT_APP_PUSHER_APP_KEY, {
       authEndpoint: "http://localhost:5000/pusher/auth",
       cluster: "eu"
     })
@@ -137,7 +137,7 @@ class App extends Component {
       <div >
         <GoogleMap
           style={mapStyles}
-          bootstrapURLKeys={{ key: 'AIzaSyCESE-89cvEp0u6XVhCkTGgq9biUcc0sD0' }}
+          bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
           center={this.state.center}
           zoom={15}
         >

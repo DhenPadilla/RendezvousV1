@@ -1,25 +1,18 @@
-# An app to locate friends, the easy way
-# Built with ReactJS, Node/Express, PostgreSQL & GraphQL
+# An app to locate friends, the easy way. 
 
-## Starting the Node server:
-* [IN DEV SERVER]
+### Built with ReactJS, Node/Express, PostgreSQL & GraphQL
+
+## For developers: 
 * Ensure that you have the .env config file(s)
-* Confirm you have Node/npm/yarn installed:
-    `node --version`
-    `npm --version`
-    `yarn --version`
-* Run: `yarn install` to install all the dependencies
-* Finally, run: `yarn dev` to start development Server with nodemon
-
-## Starting the client:
-* [IN CLIENT]
+* Check that you have the Postgres DB running (with the credentials in the .env file), or else you will get an error.
 * Confirm you have Node/npm/yarn installed:
     `node --version`
     `npm --version`
     `yarn --version`
 * Run: `yarn install` to install all the dependencies
 * Finally, run: `yarn start` to start client
-
+    * Script will bring up [http://localhost:3000] for the Rendezvous application
+    * Express Server will be available at: [http://localhost:5000]
 
 ===================================================================================
 
@@ -31,8 +24,9 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+As described above.
+Script will bring up [http://localhost:3000] for the Rendezvous application
+    Express Server will be available at: [http://localhost:5000]
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
