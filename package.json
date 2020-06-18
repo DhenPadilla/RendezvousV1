@@ -1,0 +1,65 @@
+{
+  "name": "Rendezvous",
+  "version": "1.0.0",
+  "description": "Rendezvous",
+  "proxy": "http://localhost:5000",
+  "scripts": {
+    "build ": "node ./buildScript",
+    "start-server": "cross-env NODE_ENV=development nodemon devServer/index.js --watch devServer/*",
+    "start-front": "react-scripts start",
+    "build-front": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start": "concurrently \"yarn start-server\" \"yarn start-front\" --kill-others"
+  },
+  "license": "MIT",
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.4",
+    "google-map-react": "^1.1.7",
+    "helmet": "^3.23.1",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "pusher": "^3.0.1",
+    "pusher-js": "^6.0.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-toastify": "^6.0.5",
+    "sequelize": "^5.21.12"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "24.9.1",
+    "@types/node": "13.9.5",
+    "@types/react": "16.9.26",
+    "@types/react-dom": "16.9.5",
+    "concurrently": "^5.2.0",
+    "cross-env": "^7.0.2",
+    "nodemon": "^2.0.4",
+    "react-scripts": "3.4.1"
+  }
+}
