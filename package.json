@@ -5,7 +5,7 @@
   "proxy": "http://localhost:5000",
   "scripts": {
     "build ": "node ./buildScript",
-    "start-server": "cross-env NODE_ENV=development nodemon devServer/index.js --watch devServer/*",
+    "start-server": "nodemon devServer/index.js",
     "start-front": "react-scripts start",
     "build-front": "react-scripts build",
     "test": "react-scripts test",
@@ -40,6 +40,8 @@
     "express-handlebars": "^4.0.4",
     "google-map-react": "^1.1.7",
     "helmet": "^3.23.1",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "pg": "^8.2.1",
     "pg-hstore": "^2.3.3",
     "pusher": "^3.0.1",

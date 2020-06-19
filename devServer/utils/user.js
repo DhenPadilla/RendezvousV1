@@ -14,6 +14,17 @@ module.exports = {
             status: "OFFLINE"
         });
     },
+    getUserViaId: function(id) {
+        return User.findAll({
+            limit: 1,
+            where: {
+                id: id
+            },
+            order: [ [ 'createdAt', 'DESC' ]]
+        }).then((user) => {
+            return user[0];
+        })
+    },
     getUserViaUsername: function(username) {
         return User.findAll({
             limit: 1,

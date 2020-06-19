@@ -6,9 +6,14 @@ const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const passport = require('passport');
 const Pusher = require('pusher');
-// Database
+
+// Database config
 const db = require('./config/dbConfig');
+
+// Passport config
+require('./config/passport')(passport);
 
 // Test DB
 db.authenticate()
@@ -24,6 +29,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
+app.use(passport.initialize());
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
     app.get('*', (req, res) => {

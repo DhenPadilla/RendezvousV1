@@ -1,5 +1,5 @@
 const home = require('./controller/home');
-const auth = require('./auth');
+const auth = require('./controller/auth');
 const user = require('./controller/user');
 const pusher = require('./pusher');
 

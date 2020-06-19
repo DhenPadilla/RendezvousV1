@@ -4,22 +4,30 @@ const bcrypt = require('bcrypt');
 const db = require('../config/dbConfig');
 const User = require('../models/User');
 const userUtils = require('../utils/user');
+const authService = require('../service/auth');
+const passport = require('passport');
 
 // Route paths are prepended with '/auth'
+
+// Test function
+router.get('/protected', authService.auth(), (req, res, next) => {
+    res.status(200).json({ success: true, message: 'You are authorised!' });
+});
 
 // Sign-up/register
 router.post('/signup', async(req, res, next) => {
     try {
         // TODO: Do form validation in Front-End
-        const { first_name, last_name, username, email, password, password2 } = req.body;
+        const { first_name, last_name, username, email, password } = req.body;
         // Bcrypt:
-        let hashedPassword = await bcrypt.hash(password, 10);
+        let hashedPassword = await authService.hashPassword(password);
         // Check if user username exists:
         let checkUsername = await userUtils.getUserViaUsername(username);
         if(!checkUsername) {
             userUtils.create(first_name, last_name, username, email, hashedPassword)
             .then(user => {
-                res.status(200).send("Successfully created the user: @" + username);
+                const jwt = authService.issueJWT(user);
+                res.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires });
             }).catch((err) => {
                 res.status(401).send(err.message);
             });
@@ -33,7 +41,13 @@ router.post('/signup', async(req, res, next) => {
         if(!checkEmail) {
             userUtils.create(first_name, last_name, username, email, hashedPassword)
             .then(user => {
-                res.status(200).send("Successfully created the user: @" + username);
+                const jwt = authService.issueJWT(user);
+                res.json({ 
+                    success: true, 
+                    user: user, 
+                    token: jwt.token, 
+                    expiresIn: jwt.expires 
+                });
             }).catch((err) => {
                 res.status(401).send(err.message);
             });
@@ -42,7 +56,6 @@ router.post('/signup', async(req, res, next) => {
             next(new Error('Email already in use'));
         }
     } catch(err) {
-        console.error(err.message);
         res.status(401).send(err.message);
         next(new Error('Invalid User registration'));
     }
@@ -53,39 +66,35 @@ router.post('/login', async(req, res, next) => {
     try {
         // TODO: Do form validation in Front-End
         const { username, password } = req.body;
-        // Bcrypt:
-        let hashedPassword = await bcrypt.hash(password, 10);
         // Check if user username exists:
         let user = await userUtils.getUserViaUsername(username);
         if(user) {
             // Compare password with hashed password
-            bcrypt.compare(req.body.password, user.password)
+            authService.comparePassword(req.body.password, user.password)
             .then((result) => {
                 // if passwords match:
                 if(result) {
-                    // Set the 'set-cookie' header:
-                    const isSecure = req.app.get('env') !== 'development';
-                    res.cookie('user_id', user.id, {
-                        httpOnly: true,
-                        // Set true when in production
-                        secure: isSecure,
-                        signed: true,
-                    });
+                    const token = authService.issueJWT(user);
                     res.status(200).json({
-                        result,
+                        success: true,
+                        user: user,
+                        token: token.token,
+                        expires: token.expires,
                         message: "Successfully logged in user: @" + username + '!  ✅'
                     });
                 }
                 else {
-                    next(new Error('Invalid login'));
+                    res.status(401).json({ success: false, message: "You have entered the wrong password" });
                 }
             })
+            .catch(err => {
+                res.status(401).json({ success: false, message: "No user found with that username" });
+            });
         }
         else {
-            next(new Error('Invalid login'));
+            res.status(401).json({ success: false, message: "Bcrypt compare went wrong?" });
         }
     } catch(err) {
-        console.error(err.message);
         res.status(401).send(err.message);
         next(new Error('Invalid User Login'));
     }
