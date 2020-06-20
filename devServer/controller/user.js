@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/dbConfig'); 
 const User = require('../models/User');
+const userUtils = require('../utils/user');
 
 // Get list of users
 router.get('/', (req, res) => 
@@ -11,6 +12,24 @@ router.get('/', (req, res) =>
         })
         .catch(err => console.log(err))
 );
+
+router.get('/:username', async (req, res) => {
+    try {
+        let user = await userUtils.getUserViaUsername(req.params.username);
+        if(user) {
+            res.status(200).json({
+                success: true,
+                user: user
+            });
+        }
+        else {
+            res.status(401).json({ success: false, message: "User profile not found" });
+        }
+    }
+    catch {
+        res.status(401).json({ success: false, message: "User profile not found" });
+    }
+})
 
 router.delete('/:username', async(req, res) => {
     const user = req.params.username;

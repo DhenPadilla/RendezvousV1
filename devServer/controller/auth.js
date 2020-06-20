@@ -100,4 +100,6 @@ router.post('/login', async(req, res, next) => {
     }
 })
 
+// TODO: Logout
+
 module.exports = router;
