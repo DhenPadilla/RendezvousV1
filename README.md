@@ -1,6 +1,6 @@
 # An app to locate friends, the easy way. 
 
-### Built with ReactJS, Node/Express, PostgreSQL & GraphQL
+### Built with ReactJS, Node/Express, PostgreSQL (& soon GraphQL)
 
 ## For developers: 
 * Ensure that you have the .env config file(s)
