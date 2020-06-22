@@ -9,8 +9,8 @@ const passport = require('passport');
 
 // Route paths are prepended with '/auth'
 
-// Test function
-router.get('/protected', authService.auth(), (req, res, next) => {
+// Authenticate the user (protected)
+router.get('/authenticate', authService.auth(), (req, res, next) => {
     res.status(200).json({ success: true, message: 'You are authorised!' });
 });
 
