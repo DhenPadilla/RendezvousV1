@@ -35,11 +35,13 @@ class AuthService {
 
     isAuthenticated() {
         const authStr = localStorage.getItem('token');
+        console.log(authStr);
         try {
             axios.get('/auth/authenticate', { 'headers': { 'Authorization': authStr } })
             .then(function (response) {
                 if(response.data.success) {
-                    console.log("WOO")
+                    console.log("WOO");
+                    console.log(response.data);
                     this.authenticated = true;
                 }
                 else {
