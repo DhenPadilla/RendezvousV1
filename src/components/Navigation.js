@@ -5,6 +5,7 @@ import AuthService from '../services/AuthService'
 function Navigation (props) {
     const logout = () => {
         AuthService.logout(() => {
+            props.setIsAuthenticated(false);
             props.history.push("/login");
         });
     }

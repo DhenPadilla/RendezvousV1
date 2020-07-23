@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../styles/Rendezvous.svg'
 import OutsideNavigation from './OutsideNavigation'
 import Navigation from './Navigation'
@@ -6,15 +6,32 @@ import { Link } from 'react-router-dom'
 import AuthService from '../services/AuthService'
 
 function Header() {
-    const isAuthenticated = async () => {
-        let authed = await AuthService.isAuthenticated();
-        return authed;
-    }
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+    useEffect(() => {
+        let mounted = true
+        async function getAuth () {
+            try {
+                let authed = await AuthService.isAuthenticated();
+                if(mounted) {
+                    setIsAuthenticated(authed)
+                }
+            }
+            catch (err) {
+                console.log(err);
+                return false;
+            }
+        }
+        getAuth();
+
+        return () => { mounted = false }
+    }, [isAuthenticated]);
+
 
     let navbar
     if (isAuthenticated) {
         navbar = 
-        <Navigation />
+        <Navigation setIsAuthenticated={setIsAuthenticated} />
     }
     else {
         navbar = 
