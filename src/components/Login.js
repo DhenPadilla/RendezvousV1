@@ -1,23 +1,42 @@
 import React, { useState } from 'react'
-import AuthService from './auth/AuthService'
+import AuthService from '../services/AuthService'
+import _ from 'lodash'
 
 function Login (props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
-    const login = (e) => {
-        e.preventDefault();
-        let cb = () => { 
-            props.history.push("/"); 
-        }
-        AuthService.login({username, password}, cb);
-    }
+    const [loading, setLoading] = useState(false);
     
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        let authedUser = AuthService.login({username, password})
+        .then(() => {
+            props.history.push("/");
+            window.location.reload();
+        }, (error) => {
+            // const resMessage =
+            //   (error.response.data.message) || error.toString();
+            console.log(error);
+        });
+    }
+
+ 
+    // useEffect(() => {
+    //      async function checkAuth () {
+    //          let authed = await AuthService.isAuthenticated();
+    //          if (authed) {
+    //            props.history.push("/");
+    //          }
+    //      }
+    //      checkAuth();
+    // });
+
     return (
         <div className="block float-right h-full w-1/3 border-solid border-1">
                 <div className="w-full max-w-xs">
                     <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                          onSubmit={login}>
+                          onSubmit={handleLogin}>
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-sofia mb-2">
                                 Username

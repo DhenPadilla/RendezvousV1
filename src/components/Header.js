@@ -3,11 +3,16 @@ import logo from '../styles/Rendezvous.svg'
 import OutsideNavigation from './OutsideNavigation'
 import Navigation from './Navigation'
 import { Link } from 'react-router-dom'
-import AuthService from './auth/AuthService'
+import AuthService from '../services/AuthService'
 
 function Header() {
+    const isAuthenticated = async () => {
+        let authed = await AuthService.isAuthenticated();
+        return authed;
+    }
+
     let navbar
-    if (AuthService.isAuthenticated) {
+    if (isAuthenticated) {
         navbar = 
         <Navigation />
     }

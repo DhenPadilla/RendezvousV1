@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/dbConfig');
 const User = require('../models/User');
+const Op = require('sequelize').Op;
 
 module.exports = {
     create: function(first_name, last_name, username, email, hashedPassword) {

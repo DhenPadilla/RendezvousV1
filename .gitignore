@@ -4,6 +4,7 @@ secrets/
 package-lock.json
 tmp/
 *.log
+dump_db.tar
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 

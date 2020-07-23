@@ -1,9 +1,8 @@
 const bcrypt = require('bcrypt');
 const fs = require('fs');
-const Jwt = require('jsonwebtoken');
+const jsonwebtoken = require('jsonwebtoken');
 const path = require('path');
 const passport = require('passport');
-
 const pathToKey = path.join(__dirname, '..', 'secrets', 'keys', 'id_rsa_priv.pem');
 const PRIV_KEY = fs.readFileSync(pathToKey, 'utf8');
 
@@ -16,7 +15,7 @@ Auth.issueJWT = function(user) {
         sub: id,
         iat: Date.now()
     }
-    const signedToken = Jwt.sign(
+    const signedToken = jsonwebtoken.sign(
         payload, 
         PRIV_KEY, 
         { expiresIn: JWT_TTL, algorithm: 'RS256' }
@@ -28,7 +27,7 @@ Auth.issueJWT = function(user) {
 };
 
 Auth.auth = function () {
-  return passport.authenticate('jwt', {session: false});
+  return passport.authenticate('jwt', { session: false });
 };
 
 Auth.hashPassword = async function (password) {

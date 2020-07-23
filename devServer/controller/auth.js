@@ -5,7 +5,6 @@ const db = require('../config/dbConfig');
 const User = require('../models/User');
 const userUtils = require('../utils/user');
 const authService = require('../service/auth');
-const passport = require('passport');
 
 // Route paths are prepended with '/auth'
 
@@ -74,13 +73,16 @@ router.post('/login', async(req, res, next) => {
             .then((result) => {
                 // if passwords match:
                 if(result) {
+                    delete user['dataValues'].password;
+                    console.log(user);
                     const token = authService.issueJWT(user);
+                    res.cookie('token', token, { httpOnly: true });
                     res.status(200).json({
                         success: true,
                         user: user,
                         token: token.token,
                         expires: token.expires,
-                        message: "Successfully logged in user: @" + username + '!  ✅'
+                        message: "Successfully logged in user: @" + username + "!  ✅"
                     });
                 }
                 else {

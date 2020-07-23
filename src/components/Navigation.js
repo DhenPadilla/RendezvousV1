@@ -1,11 +1,11 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import AuthService from './auth/AuthService'
+import AuthService from '../services/AuthService'
 
 function Navigation (props) {
     const logout = () => {
-        AuthService.logout(() => { 
-            props.history.push("/login"); 
+        AuthService.logout(() => {
+            props.history.push("/login");
         });
     }
 

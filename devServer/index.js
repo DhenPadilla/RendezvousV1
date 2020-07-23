@@ -1,5 +1,4 @@
 const express = require('express');
-const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
@@ -8,6 +7,7 @@ const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
 const Pusher = require('pusher');
+const ApolloServer = require('apollo-server-express').ApolloServer;
 
 // Database config
 const db = require('./config/dbConfig');
@@ -39,6 +39,23 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
 
 // ROUTES
 require('./routes')(app); // configure our routes
+
+// // Apollo / GraphQL
+// const apolloServer = new ApolloServer({
+//     typeDefs:`
+//     type Query {
+//         hello: String!
+//     }
+//     `,
+//     resolvers: {
+//         Query: {
+//             hello: () => "Hello! "
+//         }
+//     }
+// });
+
+// apolloServer.applyMiddleware({ app });
+
 
 const PORT = process.env.PORT || 5000;
 
