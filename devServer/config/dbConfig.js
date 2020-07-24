@@ -2,7 +2,8 @@ require('dotenv').config();
 const isProduction = process.env.NODE_ENV === 'PRODUCTION';
 
 const Sequelize = require('sequelize');
-module.exports = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD, {
+
+const db = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: 'localhost',
     // host: isProduction ? psql_url : 'localhost',
     dialect: 'postgres',
@@ -13,3 +14,5 @@ module.exports = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pro
         idle: 10000,
     }
 });
+
+module.exports = db;

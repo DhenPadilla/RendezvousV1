@@ -4,21 +4,23 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
-const path = require('path');
+// const path = require('path');
 const passport = require('passport');
-const Pusher = require('pusher');
+// const Pusher = require('pusher');
+
+// GraphQL:
 const ApolloServer = require('apollo-server-express').ApolloServer;
 
+// TODO - Refactor typedefs and resolvers into different directories 
+//         i.e a 'merge' across typedefs and resolvers respectively.
+const typeDefs = require('./graphql/schema');
+const resolvers = require('./graphql/resolvers');
+
 // Database config
-const db = require('./config/dbConfig');
+const models = require('./models/index');
 
 // Passport config
 require('./config/passport')(passport);
-
-// Test DB
-db.authenticate()
-.then(() => console.log('Database connected...'))
-.catch(err => console.log('Error: ' + err));
 
 const app = express();
 
@@ -40,26 +42,25 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
 // ROUTES
 require('./routes')(app); // configure our routes
 
-// // Apollo / GraphQL
-// const apolloServer = new ApolloServer({
-//     typeDefs:`
-//     type Query {
-//         hello: String!
-//     }
-//     `,
-//     resolvers: {
-//         Query: {
-//             hello: () => "Hello! "
-//         }
-//     }
-// });
-
-// apolloServer.applyMiddleware({ app });
+// Apollo / GraphQL
+const apolloServer = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers
+});
+apolloServer.applyMiddleware({ app });
 
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, console.log(`Server started on port ${PORT}`));
+// -- IN DEV ONLY --
+// use: sync({ force:true }) to DROP all TABLES & REMAKE them
+// This creates a fresh DB.
+// You will need to create users again
+models.sequelize.sync().then(() => {
+// models.sequelize.sync({ force: true }).then(() => {
+    console.log("Sequelize successfully synced with DB! ✅");
+    app.listen(PORT, console.log(`Server started on port ${PORT}`));
+})
 
 
 app.use(function(err, req, res, next) {

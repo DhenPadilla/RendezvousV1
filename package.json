@@ -45,6 +45,7 @@
     "express": "^4.17.1",
     "google-map-react": "^1.1.7",
     "graphql": "^15.2.0",
+    "graphql-tools": "^6.0.15",
     "helmet": "^3.23.1",
     "http-proxy-middleware": "^1.0.4",
     "lodash": "^4.17.15",

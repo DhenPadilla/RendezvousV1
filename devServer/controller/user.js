@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/dbConfig'); 
-const User = require('../models/User');
+const db = require('../config/dbConfig');
+const User = require('../models/index').User(db);
 const userUtils = require('../utils/user');
 
 // Get list of users

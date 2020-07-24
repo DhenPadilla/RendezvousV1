@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/dbConfig');
-const User = require('../models/User');
+const User = require('../models/index').User(db);
 const Op = require('sequelize').Op;
 
 module.exports = {
