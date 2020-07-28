@@ -4,23 +4,19 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
-// const path = require('path');
+const path = require('path');
 const passport = require('passport');
 // const Pusher = require('pusher');
 
 // GraphQL:
 const ApolloServer = require('apollo-server-express').ApolloServer;
-
-// TODO - Refactor typedefs and resolvers into different directories 
-//         i.e a 'merge' across typedefs and resolvers respectively.
-// DONE TODO ✅ -- SEE BELOW
-const path = require('path');
 const { loadFilesSync } = require('@graphql-tools/load-files');
 const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
 
 // TypeDefs (Under: ./graphql/schema)
 const typesArray = loadFilesSync(path.join(__dirname, './graphql/schema'));
 const typeDefs = mergeTypeDefs(typesArray, { all: true });
+
 // Resolvers (Under: ./graphql/resolvers)
 const resolversArray = loadFilesSync(path.join(__dirname, './graphql/resolvers'));
 const resolvers = mergeResolvers(resolversArray);
@@ -54,7 +50,10 @@ require('./routes')(app); // configure our routes
 // Apollo / GraphQL
 const apolloServer = new ApolloServer({
     typeDefs: typeDefs,
-    resolvers: resolvers
+    resolvers: resolvers,
+    context: {
+        models,
+    }
 });
 apolloServer.applyMiddleware({ app });
 
@@ -65,8 +64,8 @@ const PORT = process.env.PORT || 5000;
 // use: sync({ force:true }) to DROP all TABLES & REMAKE them
 // This creates a fresh DB.
 // You will need to create users again
-// models.sequelize.sync().then(() => {
-models.sequelize.sync({ force: true }).then(() => {
+models.sequelize.sync().then(() => {
+// models.sequelize.sync({ force: true }).then(() => {
     console.log("Sequelize successfully synced with DB! ✅");
     app.listen(PORT, console.log(`Server started on port ${PORT}`));
 })

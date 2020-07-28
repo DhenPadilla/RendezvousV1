@@ -2,8 +2,8 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
     const Friendship = sequelize.define('friendship', {
-        user_id: Sequelize.INTEGER,
-        friend_id: Sequelize.INTEGER,
+        userId: Sequelize.INTEGER,
+        friendId: Sequelize.INTEGER,
         status: {
             type: Sequelize.INTEGER,
             allowNull: false,

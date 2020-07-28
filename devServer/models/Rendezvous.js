@@ -15,11 +15,11 @@ module.exports = (sequelize) => {
             // 3 - DENY
             // 4 - COMPLETE
         },
-        rendezvous_location: {
+        rendezvousLocation: {
             type: Sequelize.STRING,
             allowNull: true
         },
-        rendezvous_date: {
+        rendezvousDate: {
             type: Sequelize.DATE,
             allowNull: true
         }
