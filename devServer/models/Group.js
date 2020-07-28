@@ -9,7 +9,14 @@ module.exports = (sequelize) => {
     
     Group.associate = (models) => {
         Group.belongsToMany(models.User, {
-            through: 'member',
+            through: 'group_memberships',
+            foreignKey: {
+                name: 'groupId',
+                field: 'group_id'
+            }
+        })
+        Group.belongsTo(models.Rendezvous, {
+            through: 'rendezvous_membership',
             foreignKey: {
                 name: 'groupId',
                 field: 'group_id'

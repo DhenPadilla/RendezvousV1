@@ -17,13 +17,17 @@ module.exports = (db) => {
         },
         password: Sequelize.STRING,
         status: {
-            type: Sequelize.STRING
+            type: Sequelize.INTEGER
+            // 0 - Offline / Inactive
+            // 1 - Available
+            // 2 - On my way
+            // 3 - Online & Busy
         }
     })
     
     User.associate = (models) => {
         User.belongsToMany(models.Group, {
-            through: 'member',
+            through: 'members',
             foreignKey: {
                 name: 'userId',
                 field: 'user_id'
@@ -31,7 +35,7 @@ module.exports = (db) => {
         });
         User.belongsToMany(models.User, {
             as: 'friends', 
-            through: 'friendship', 
+            through: 'friends', 
             foreignKey: {
                 name: 'userId', 
                 field: 'user_id'
@@ -40,7 +44,7 @@ module.exports = (db) => {
                 name: 'friendId',
                 field: 'friend_id'
             }
-        })
+        });
     };
 
     return User;

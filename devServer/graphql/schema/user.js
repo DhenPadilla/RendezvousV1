@@ -1,11 +1,5 @@
 module.exports = 
 `
-    type Group {
-        id: Int!,
-        name: String!,
-        users: [User!]!
-    }
-
     type User {
         id: Int!,
         firstName: String!,
@@ -13,11 +7,16 @@ module.exports =
         username: String!,
         email: String!,
         password: String!,
-        status: String!
+        status: Int!
         groups: [Group!]!
+        friends: [User!]!
+        rendezvous: [Rendezvous!]!
     }
 
     type Query {
-        hi: String
+        hello: String
     }
-`;
+
+
+`
+;

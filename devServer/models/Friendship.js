@@ -13,11 +13,18 @@ module.exports = (sequelize) => {
             // 1 - approved 
             // 2 - user blocked friend
             // 3 - friend blocked user
-        },
-        approveAt: {
-            type: Sequelize.DATE,
-            allowNull: true
         }
     })
+
+    Friendship.associate = (models) => {
+        Friendship.belongsTo(models.Rendezvous, {
+            through: 'rendezvous_membership',
+            foreignKey: {
+                name: 'friendshipId',
+                field: 'friendship_id'
+            }
+        });
+    }
+
     return Friendship;
 }

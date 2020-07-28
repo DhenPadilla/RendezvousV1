@@ -13,9 +13,9 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
         idle: 10000,
     },
     logging: true,
-    // define: {
-    //     underscored: true,
-    // }
+    define: {
+        underscored: true,
+    }
 });
 
 // Test DB
@@ -25,10 +25,13 @@ sequelize.authenticate()
 
 const models = {
 	User: require('./User'),
-    Group: require('./Group'),
     Friendship: require('./Friendship'),
-    Membership: require('./Membership')
-	// require('./Rendezvous'),
+    Group: require('./Group'),
+    groupMembership: require('./GroupMembership'),
+    rendezvous: require('./Rendezvous'),
+    rendezvousMembership: require('./RendezvousMembership')
+    // Add after:
+    // Message: require('./Message')
 };
 
 // We define all models according to their files.
