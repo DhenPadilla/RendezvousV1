@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Login from './Login'
+import { useQuery, gql } from '@apollo/client'
 
 function LandingPage (props) {
     const { from } = props.history.location.state || { from: { pathname: "/" } };
     console.log(from.pathname);
-
     const [showLogin, setShowLogin] = useState()
 
     // useEffect(() => {

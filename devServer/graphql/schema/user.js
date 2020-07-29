@@ -7,7 +7,7 @@ module.exports =
         username: String!,
         email: String!,
         password: String!,
-        status: Int
+        status: Int!
         groups: [Group!]!
         friends: [User!]!
         rendezvous: [Rendezvous!]!
@@ -24,7 +24,13 @@ module.exports =
             lastName: String!, 
             username: String!, 
             email: String!, 
-            password: String!): User
+            password: String!,
+            status: Int=0): User
+
+        login(
+            username: String!,
+            password: String!
+        ): User
     }
 `;
 

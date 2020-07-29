@@ -1,24 +1,37 @@
 import React, { useState } from 'react'
 import AuthService from '../services/AuthService'
 import _ from 'lodash'
+import { useMutation, gql } from '@apollo/client'
+
+const loginMutation = gql`
+    mutation ($username:String!, $password:String!) {
+	    login(username:$username, password:$password) {
+  	        status
+	    }
+    }
+`
 
 function Login (props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const [login, { data }] = useMutation(loginMutation);
     
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        let authedUser = AuthService.login({username, password})
-        .then(() => {
-            props.history.push("/");
-            window.location.reload();
-        }, (error) => {
-            // const resMessage =
-            //   (error.response.data.message) || error.toString();
-            console.log(error);
-        });
+        loginMutation({ variables: { username: username, password: password}});
+
+        // let authedUser = AuthService.login({username, password})
+        // .then(() => {
+        //     props.history.push("/");
+        //     window.location.reload();
+        // }, (error) => {
+        //     // const resMessage =
+        //     //   (error.response.data.message) || error.toString();
+        //     console.log(error);
+        // });
     }
 
  

@@ -8,5 +8,10 @@ module.exports =
         group: Group,
         users: [User!],
     }
+
+
+    type Mutation {
+        createRendezvous(friendshipId: Int, groupId: Int, status: Int=0, rendezvousLocation: String): Boolean!
+    }
 `
 ;

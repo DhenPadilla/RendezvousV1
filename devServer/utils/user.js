@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/dbConfig');
+const db = require('../models/index').sequelize;
 const User = require('../models/index').User(db);
 const Op = require('sequelize').Op;
 
 module.exports = {
-    create: function(first_name, last_name, username, email, hashedPassword) {
+    create: function({firstName, lastName, username, email, password, status}) {
         return User.create({
-            first_name: first_name,
-            last_name: last_name,
+            first_name: firstName,
+            last_name: lastName,
             username: username,
             email: email,
-            password: hashedPassword,
-            status: "OFFLINE"
+            password: password,
+            status: status
         });
     },
     getUserViaId: function(id) {

@@ -32,7 +32,7 @@ const app = express();
 // Middleware
 app.use(compression());
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(cors());
+app.use(cors('*'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
@@ -53,6 +53,10 @@ const apolloServer = new ApolloServer({
     resolvers: resolvers,
     context: {
         models,
+        // Change this to JWT
+        user: {
+            id: 1
+        }
     }
 });
 apolloServer.applyMiddleware({ app });

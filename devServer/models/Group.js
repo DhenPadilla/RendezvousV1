@@ -2,6 +2,9 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
     const Group = sequelize.define('group', {
+        owner: {
+            type: Sequelize.STRING
+        },
         name: {
             type: Sequelize.STRING
         }

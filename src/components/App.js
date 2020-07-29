@@ -5,6 +5,13 @@ import Header from './Header'
 import Home from './Home'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import ProtectedRoute from './utils/ProtectedRoute'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+
+const client = new ApolloClient({
+  uri: 'http://localhost:5000/graphql',
+  cache: new InMemoryCache()
+});
+
 
 function App() {
     const storedJwt = localStorage.getItem('token');
@@ -14,16 +21,18 @@ function App() {
     // const [authState, setAuthState] = useState(null);
 
     return (
-      <div>
-        <BrowserRouter>
-          <Header />
-          <Switch>
-            <Route exact path="/login" component={LandingPage} />
-            <ProtectedRoute exact={true} path="/" component={Home}/>
-            <Route path="*" component={() => "404 NOT FOUND"} />
-          </Switch>
-        </BrowserRouter>
-      </div>
+      <ApolloProvider client={client}>
+        <div>
+          <BrowserRouter>
+            <Header />
+            <Switch>
+              <Route exact path="/login" component={LandingPage} />
+              <ProtectedRoute exact={true} path="/" component={Home}/>
+              <Route path="*" component={() => "404 NOT FOUND"} />
+            </Switch>
+          </BrowserRouter>
+        </div>
+      </ApolloProvider>
     )
 }
 

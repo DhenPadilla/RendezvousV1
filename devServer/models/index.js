@@ -12,7 +12,7 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
         acquire: 30000,
         idle: 10000,
     },
-    logging: true,
+    logging: false,
     define: {
         underscored: true,
     }
@@ -27,9 +27,9 @@ const models = {
 	User: require('./User'),
     Friendship: require('./Friendship'),
     Group: require('./Group'),
-    groupMembership: require('./GroupMembership'),
-    rendezvous: require('./Rendezvous'),
-    rendezvousMembership: require('./RendezvousMembership')
+    GroupMembership: require('./GroupMembership'),
+    Rendezvous: require('./Rendezvous'),
+    RendezvousMembership: require('./RendezvousMembership')
     // Add after:
     // Message: require('./Message')
 };

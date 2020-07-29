@@ -27,15 +27,14 @@ module.exports = (db) => {
     
     User.associate = (models) => {
         User.belongsToMany(models.Group, {
-            through: 'members',
+            through: 'group_membership',
             foreignKey: {
                 name: 'userId',
                 field: 'user_id'
             }
         });
         User.belongsToMany(models.User, {
-            as: 'friends', 
-            through: 'friends', 
+            through: 'friendships', 
             foreignKey: {
                 name: 'userId', 
                 field: 'user_id'
