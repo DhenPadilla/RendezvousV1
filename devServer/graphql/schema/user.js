@@ -18,6 +18,14 @@ module.exports =
         allUsers: [User!]!
     }
 
+    type LoginResponse {
+        success: Boolean!,
+        message: String,
+        token: String,
+        refreshToken: String,
+        errors: [Error!]
+    }
+
     type Mutation {
         signup(
             firstName: String!, 
@@ -30,7 +38,7 @@ module.exports =
         login(
             username: String!,
             password: String!
-        ): User
+        ): LoginResponse
     }
 `;
 

@@ -48,23 +48,24 @@ module.exports =  {
                 let user = await userUtils.getUserViaUsername(args.username);
                 if(user) {
                     // Compare password with hashed password
-                    authService.comparePassword(args.password, user.password)
-                    .then((result) => {
+                    const result = await authService.comparePassword(args.password, user.password)
                         // if passwords match:
-                        if(result) {
-                            const token = authService.issueJWT(user);
-                            return user;
+                    if(result) {
+                        const { token } = authService.issueJWT(user);
+                        console.log(result);
+                        console.log(user.dataValues);
+                        return {
+                            success: true,
+                            message: "Successfully logged in! ✅",
+                            token: token
                         }
-                    })
-                    .catch(err => {
-                        // return { success: false, message: "No user found with that username" };
-                        console.log(err);
-                    });
+                    }
                 }
                 // else {
                 //    return { success: false, message: "Bcrypt compare went wrong?" };
                 // }
             } catch(err) {
+                return { success: false, message: "No user found with that username" };
                 console.log(err);
             }
         }

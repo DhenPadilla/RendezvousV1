@@ -27,14 +27,13 @@ module.exports = {
         })
     },
     getUserViaUsername: function(username) {
-        return User.findAll({
-            limit: 1,
+        return User.findOne({
             where: {
               username: username
             },
-            order: [ [ 'createdAt', 'DESC' ]]
+            raw: true
         }).then((user) => {
-            return user[0];
+            return user;
         });
     },
     getUserViaEmail: function(email) {

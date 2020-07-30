@@ -5,9 +5,11 @@ import { useMutation, gql } from '@apollo/client'
 
 const loginMutation = gql`
     mutation ($username:String!, $password:String!) {
-	    login(username:$username, password:$password) {
-  	        status
-	    }
+        login(username:$username, password:$password) {
+            success,
+            message, 
+            token
+        }
     }
 `
 
@@ -21,29 +23,16 @@ function Login (props) {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        loginMutation({ variables: { username: username, password: password}});
-
-        // let authedUser = AuthService.login({username, password})
-        // .then(() => {
-        //     props.history.push("/");
-        //     window.location.reload();
-        // }, (error) => {
-        //     // const resMessage =
-        //     //   (error.response.data.message) || error.toString();
-        //     console.log(error);
-        // });
+        const { data } = await login({ variables: { username: username, password: password}});
+        if(data.login.success) {
+            localStorage.setItem("token", data.login.token);
+            props.history.push("/");
+            window.location.reload();
+        }
+        else {
+            alert(data.login.errors);
+        }
     }
-
- 
-    // useEffect(() => {
-    //      async function checkAuth () {
-    //          let authed = await AuthService.isAuthenticated();
-    //          if (authed) {
-    //            props.history.push("/");
-    //          }
-    //      }
-    //      checkAuth();
-    // });
 
     return (
         <div className="block float-right h-full w-1/3 border-solid border-1">
