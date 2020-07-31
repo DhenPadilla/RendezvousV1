@@ -23,51 +23,12 @@ module.exports =  {
     },
     Mutation: {
         signup: async (parent, args, { models }) => {
-            // return models.User(models.sequelize).create(args);
-            try {
-                // Bcrypt:
-                let hashedPassword = await authService.hashPassword(args.password);
-                args.password = hashedPassword;
-                // Check if user username exists:
-                let checkUsername = await userUtils.getUserViaUsername(args.username);
-                let checkEmail = await userUtils.getUserViaEmail(args.email);
-                if(!checkUsername && !checkEmail) {
-                    return await userUtils.create(args);
-                }
-                else {
-                    console.log("Email/Username already in use.");
-                }
-            } catch(err) {
-                console.log('Invalid user registration');
-                return {};
-            }
+            let res = await authService.signup(args);
+            return res;
         },
-        login: async (parent, args, { models }) => {
-            try {
-                // Check if user username exists:
-                let user = await userUtils.getUserViaUsername(args.username);
-                if(user) {
-                    // Compare password with hashed password
-                    const result = await authService.comparePassword(args.password, user.password)
-                        // if passwords match:
-                    if(result) {
-                        const { token } = authService.issueJWT(user);
-                        console.log(result);
-                        console.log(user.dataValues);
-                        return {
-                            success: true,
-                            message: "Successfully logged in! ✅",
-                            token: token
-                        }
-                    }
-                }
-                // else {
-                //    return { success: false, message: "Bcrypt compare went wrong?" };
-                // }
-            } catch(err) {
-                return { success: false, message: "No user found with that username" };
-                console.log(err);
-            }
+        login: async (parent, {username, password}, { models }) => {
+           let res = await authService.login(username, password);
+           return res;
         }
     }
 };

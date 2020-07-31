@@ -18,6 +18,13 @@ module.exports =
         allUsers: [User!]!
     }
 
+    type SignupResponse {
+        success: Boolean!,
+        message: String,
+        user: User,
+        errors: [Error!]
+    }
+
     type LoginResponse {
         success: Boolean!,
         message: String,
@@ -33,7 +40,7 @@ module.exports =
             username: String!, 
             email: String!, 
             password: String!,
-            status: Int=0): User
+            status: Int=0): SignupResponse
 
         login(
             username: String!,
