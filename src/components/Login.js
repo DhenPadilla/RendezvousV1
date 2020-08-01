@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import AuthService from '../services/AuthService'
 import _ from 'lodash'
 import { useMutation, gql } from '@apollo/client'
 

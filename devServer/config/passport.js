@@ -19,9 +19,10 @@ const options = {
     algorithms: ['RS256']
 };
 
-const strategy = new JwtStrategy(options, (payload, done) => {
+const strategy = new JwtStrategy(options, async (payload, done) => {
     try {
-        let user = userUtils.getUserViaId(payload.sub);
+        let user = await userUtils.getUserViaId(payload.sub);
+        console.log(user);
         return done(null, user);
     }
     catch (err) {
@@ -34,4 +35,19 @@ const strategy = new JwtStrategy(options, (payload, done) => {
 // TODO
 module.exports = (passport) => {
     passport.use(strategy);
+    passport.serializeUser((user, done) => {
+        done(null, user.id)
+    })
+      
+    passport.deserializeUser((id, done) => {
+        try {
+            let user = userUtils.getUserViaId(id);
+            cb(null, user);
+        }
+        catch (err) {
+            console.error('devServer/passport.js error');
+            console.error(err);
+            done(err, false);
+        }
+    })
 }

@@ -6,6 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
+const { issueJwt, verify, issueJWT } = require('./service/auth');
 // const Pusher = require('pusher');
 
 // GraphQL:
@@ -37,6 +38,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(passport.initialize());
+app.use('/graphql', bodyParser.json(), function (req, res, next) {
+    passport.authenticate('jwt', {session: false}, (err, user, info) => {
+        if (err) { 
+            res.status(500).send({ "Must be logged in!": err }); 
+            return; 
+        }
+        next();
+    } )(req, res, next);
+});
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
     app.get('*', (req, res) => {
@@ -51,13 +61,11 @@ require('./routes')(app); // configure our routes
 const apolloServer = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
-    context: {
+    context: ({ req }) => ({
         models,
         // Change this to JWT
-        user: {
-            id: 1
-        }
-    }
+        user: req.user
+    })
 });
 apolloServer.applyMiddleware({ app });
 

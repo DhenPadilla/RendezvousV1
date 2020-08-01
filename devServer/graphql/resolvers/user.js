@@ -1,25 +1,23 @@
-const bcrypt = require('bcrypt');
 const userUtils = require('../../utils/user');
 const authService = require('../../service/auth');
 
 module.exports =  {
     Query: {
-        getUserByUsername(parent, args, { models }) { 
+        getUserByUsername: async (parent, args, { models }) =>{ 
             try {
-                return models.User(models.sequelize).findOne({ 
-                    where: args 
-                }).then((user) => {
-                    return user;
-                });
+                return await userUtils.getUserViaUsername(args);
             }
             catch (err) {
                 console.log(err);
                 return {};
             }
         },
-        allUsers(parent, args, { models }) { 
-            return models.User(models.sequelize).findAll();
-        }
+        allUsers: async (parent, args, { models }) => { 
+            return await userUtils.allUsers();
+        },
+        // allFriendsForUser: async(parent, args, { models, user }) => {
+        //     return {};
+        // }
     },
     Mutation: {
         signup: async (parent, args, { models }) => {

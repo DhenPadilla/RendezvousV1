@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const fs = require('fs');
-const jsonwebtoken = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const path = require('path');
 const passport = require('passport');
 const pathToKey = path.join(__dirname, '..', 'secrets', 'keys', 'id_rsa_priv.pem');
@@ -16,8 +16,8 @@ Auth.issueJWT = function(user) {
         sub: id,
         iat: Date.now()
     }
-    const signedToken = jsonwebtoken.sign(
-        payload, 
+    const signedToken = jwt.sign(
+        payload,
         PRIV_KEY, 
         { expiresIn: JWT_TTL, algorithm: 'RS256' }
     );
@@ -53,7 +53,7 @@ Auth.signup = async function (args) {
         return {
           success: true,
           message: 'Successfully signed up @' + args.username,
-          user: newUser,
+          user: newUser
         }
     }
     else {

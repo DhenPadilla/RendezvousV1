@@ -5,15 +5,8 @@ const User = require('../models/index').User(db);
 const Op = require('sequelize').Op;
 
 module.exports = {
-    create: function({firstName, lastName, username, email, password, status}) {
-        return User.create({
-            first_name: firstName,
-            last_name: lastName,
-            username: username,
-            email: email,
-            password: password,
-            status: status
-        });
+    create: function(args) {
+        return User.create(args);
     },
     getUserViaId: function(id) {
         return User.findAll({
@@ -29,9 +22,8 @@ module.exports = {
     getUserViaUsername: function(username) {
         return User.findOne({
             where: {
-              username: username
+                username: username
             },
-            raw: true
         }).then((user) => {
             return user;
         });
@@ -47,4 +39,9 @@ module.exports = {
             return user[0];
         }); 
     },
+    allUsers: function() {
+        return User.findAll().then((users) => {
+            return users
+        });
+    }
 }
