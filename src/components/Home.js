@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Navigation from './Navigation'
 import Map from './Map'
+import AsyncSelect from 'react-select/async';
 
-import { useMutation, gql } from '@apollo/client'
+import { useMutation, useQuery, gql } from '@apollo/client'
 
 const createFriendshipMutation = gql`
 mutation($username:String!) {
@@ -16,45 +17,57 @@ mutation($username:String!) {
 	}
 }`;
 
+
+const getFriendsForUser = gql`
+query {
+	allFriendsForUser {
+          id,
+          username,
+          firstName,
+          lastName
+	}
+}`;
+
 function Home () {
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState("");
 
-    const [createFriendshipFromUsername, { data }] = useMutation(createFriendshipMutation);
+    // const [createFriendshipFromUsername, { data }] = useMutation(createFriendshipMutation);
+    // const [getFriends, { data }]  = useQuery(getFriendsForUser);
 
-    const createFriendship = async (e) => {
-        e.preventDefault();
+    // const createFriendship = async (e) => {
+    //     e.preventDefault();
 
-        let check = await createFriendshipFromUsername({ variables: { username: username }});
-        console.log(check);
-    }
+    //     let check = await createFriendshipFromUsername({ variables: { username: username }});
+    //     console.log(check);
+    // }
+
+    // const getFriendsFromUser = async () => {
+    //     let users = await getFriends();
+    //     setUsers(users);
+    // }
+
+    const { loading, error, data } = useQuery(getFriendsForUser);
+
+    if (loading) return 'Loading...';
+    if (error) return `Error! ${error.message}`;
 
 
     return (
         <div>
-            <div className="block float-right h-full w-1/3 border-solid border-1">
-                <div className="w-full max-w-xs">
-                    <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                          onSubmit={createFriendship}>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-sofia mb-2">
-                                Username
-                            </label>
-                            <input className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="username" 
-                                    type="text" 
-                                    placeholder="username"
-                                    value={username} 
-                                    onChange={e => setUsername(e.target.value)}/>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <button type="submit" value="Submit" className="bg-black float-right block mt-4 lg:inline-block lg:mt-0 text-white hover:bg-transparent hover:border-black hover:text-black border-solid border border-black rounded py-3 px-6 mt-4 lg:inline-block lg:mt-0 text-black hover:text-teal mr-4 font-sofia font-normal tracking-wider focus:outline-none focus:shadow-outline">
-                                Create Friendship
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <div>
+                {data.users.map(user => (
+                    <div key={user.id}>
+                        {user.username}, {user.firstName}
+                    </div>
+                ))}
             </div>
+            {/* <AsyncSelect
+                cacheOptions
+                loadOptions={loadOptions}
+                defaultOptions
+                onInputChange={this.handleInputChange}
+            /> */}
             {/* <Navigation />
             <Map /> */}
         </div>

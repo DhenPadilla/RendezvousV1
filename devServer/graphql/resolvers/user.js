@@ -1,5 +1,6 @@
 const userUtils = require('../../utils/user');
 const authService = require('../../service/auth');
+const friendshipUtils = require('../../utils/friendship');
 
 module.exports =  {
     Query: {
@@ -15,9 +16,9 @@ module.exports =  {
         allUsers: async (parent, args, { models }) => { 
             return await userUtils.allUsers();
         },
-        // allFriendsForUser: async(parent, args, { models, user }) => {
-        //     return {};
-        // }
+        allFriendsForUser: async(parent, args, { models, user }) => {
+            return await friendshipUtils.getAllFriendsForUser(user.id);
+        }
     },
     Mutation: {
         signup: async (parent, args, { models }) => {

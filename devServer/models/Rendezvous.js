@@ -33,13 +33,13 @@ module.exports = (sequelize) => {
                 field: 'rendezvous_id'
             }
         })
-        Rendezvous.belongsTo(models.Group, {
-            through: 'rendezvous_membership',
-            foreignKey: {
-                name: 'rendezvousId',
-                field: 'rendezvous_id'
-            }
-        })
+        // Rendezvous.belongsTo(models.Group, {
+        //     through: 'rendezvous_membership',
+        //     foreignKey: {
+        //         name: 'rendezvousId',
+        //         field: 'rendezvous_id'
+        //     }
+        // })
     }
 
     return Rendezvous;

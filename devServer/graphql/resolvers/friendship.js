@@ -5,10 +5,9 @@ const { AuthenticationError } = require('apollo-server-express');
 module.exports =  {
     Mutation: {
         createFriendshipFromUsername: async (parent, { username }, {models, user}) => {
-            console.log( user);
+            console.log("Creating friendship!");
             if (user) {
                 console.log(" Inside create friendship");
-                console.log(user);
                 try {
                     const friend = await userUtils.getUserViaUsername(username);
                     await friendshipUtils.createFriendship(user.id, friend.id);
