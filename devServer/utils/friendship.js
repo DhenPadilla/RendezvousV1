@@ -4,23 +4,37 @@ const { User, Friendship } = require('../models/index');
 const Op = require('sequelize').Op;
 
 module.exports = {
-    getAllFriendsForUser: (userId) => {
-        return User.findAll({
-            include: [
-                {
-                    model: User,
-                    as: 'friends',
-                    where: {
-                        friend_id: userId
-                    }
-                }],
-            // where: {
-            //     friendId: userId
-            // }
-        }).then((friendships) => {
-            console.log(friendships);
-            return friendships;
-        })
+    getFriendsForUser: async (userId) => {
+        try {
+            const user = await User.findOne({
+                where: {
+                    id: userId,
+                },
+                include: 'friends'
+            })
+            if (!user) throw new Error('User not found!');
+            console.log(user.friends);
+            return user.friends;
+        } catch (error) {
+          console.log(error);
+        }
+    // (userId) => {
+    //     return User.findAll({
+    //         include: [
+    //             {
+    //                 model: User,
+    //                 as: 'friends',
+    //                 where: {
+    //                     user_id: userId
+    //                 }
+    //             }],
+    //         // where: {
+    //         //     friendId: userId
+    //         // }
+    //     }).then((friendships) => {
+    //         console.log(friendships);
+    //         return friendships;
+    //     })
     },
     createFriendship: async (userId, friendId) => {
         const friendship = await Friendship.findOne({

@@ -16,7 +16,6 @@ module.exports =
     type Query {
         getUserByUsername(username: String!): User!
         allUsers: [User!]!
-        allFriendsForUser: [User!]!
     }
 
     type SignupResponse {

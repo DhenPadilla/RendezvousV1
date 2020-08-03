@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Navigation from './Navigation'
 import Map from './Map'
 import AsyncSelect from 'react-select/async';
@@ -20,7 +20,7 @@ mutation($username:String!) {
 
 const getFriendsForUser = gql`
 query {
-	allFriendsForUser {
+	getFriendsForUser {
           id,
           username,
           firstName,
@@ -29,34 +29,18 @@ query {
 }`;
 
 function Home () {
-    const [users, setUsers] = useState([]);
-    const [username, setUsername] = useState("");
-
-    // const [createFriendshipFromUsername, { data }] = useMutation(createFriendshipMutation);
-    // const [getFriends, { data }]  = useQuery(getFriendsForUser);
-
-    // const createFriendship = async (e) => {
-    //     e.preventDefault();
-
-    //     let check = await createFriendshipFromUsername({ variables: { username: username }});
-    //     console.log(check);
-    // }
-
-    // const getFriendsFromUser = async () => {
-    //     let users = await getFriends();
-    //     setUsers(users);
-    // }
+    const users = useRef([]);
 
     const { loading, error, data } = useQuery(getFriendsForUser);
 
-    if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
-
+    if (loading) console.log('Loading...');
+    if (error) console.log(`Error! ${error.message}`);
+    if (data) users.current = data.getFriendsForUser;
 
     return (
         <div>
             <div>
-                {data.users.map(user => (
+                {users.current.map(user => (
                     <div key={user.id}>
                         {user.username}, {user.firstName}
                     </div>

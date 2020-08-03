@@ -13,6 +13,10 @@ module.exports =
         errors: [Error!]
     }
 
+    type Query {
+        getFriendsForUser: [User!]!
+    }
+
     type Mutation {
         createFriendshipFromUsername(username: String!): FriendshipResponse!
     }

@@ -16,9 +16,6 @@ module.exports =  {
         allUsers: async (parent, args, { models }) => { 
             return await userUtils.allUsers();
         },
-        allFriendsForUser: async(parent, args, { models, user }) => {
-            return await friendshipUtils.getAllFriendsForUser(user.id);
-        }
     },
     Mutation: {
         signup: async (parent, args, { models }) => {
