@@ -10,11 +10,12 @@ module.exports =
     type FriendshipResponse {
         success: Boolean!,
         message: String,
+        users: [User!]
         errors: [Error!]
     }
 
     type Query {
-        getFriendsForUser: [User!]!
+        getFriendsForUser: FriendshipResponse
     }
 
     type Mutation {

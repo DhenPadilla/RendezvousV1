@@ -9,25 +9,20 @@ module.exports =  {
         }
     },
     Mutation: {
+        // Searches User-table to look for friend via username
+        // then runs friendshipUtils.createFriendship on the found friend
         createFriendshipFromUsername: async (parent, { username }, {models, user}) => {
-            console.log("Creating friendship!");
             if (user) {
-                console.log(" Inside create friendship");
                 try {
                     const friend = await userUtils.getUserViaUsername(username);
-                    await friendshipUtils.createFriendship(user.id, friend.id);
-                    console.log(
-                        {
-                            success: true,
-                            message: "Successfully created new friendship!"
-                        }
-                    )
+                    if (!friend) throw new Error('Friend not found!');
+                    const friendship = await friendshipUtils.createFriendship(user.id, friend.id);
+                    if (!friendship.success) throw new Error(friendship.error);
                     return {
-                        success: true,
+                        success: friendship.success,
                         message: "Successfully created new friendship!"
                     };
                 } catch(err) {
-                    console.log(err);
                     return {
                         success: false,
                         errors: [

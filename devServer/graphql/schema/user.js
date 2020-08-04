@@ -12,12 +12,7 @@ module.exports =
         friends: [User!]!
         rendezvous: [Rendezvous!]!
     }
-
-    type Query {
-        getUserByUsername(username: String!): User!
-        allUsers: [User!]!
-    }
-
+   
     type SignupResponse {
         success: Boolean!,
         message: String,
@@ -31,6 +26,18 @@ module.exports =
         message: String,
         token: String,
         errors: [Error!]
+    }
+
+    type UserResponse {
+        success: Boolean!,
+        user: User,
+        errors: [Error!]
+    }
+
+    type Query {
+        getUserByUsername(username: String!): UserResponse!
+        allUsers: [User!]!
+        getUser: UserResponse!
     }
 
     type Mutation {

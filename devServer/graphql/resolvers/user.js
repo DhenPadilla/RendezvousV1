@@ -5,17 +5,14 @@ const friendshipUtils = require('../../utils/friendship');
 module.exports =  {
     Query: {
         getUserByUsername: async (parent, args, { models }) =>{ 
-            try {
-                return await userUtils.getUserViaUsername(args);
-            }
-            catch (err) {
-                console.log(err);
-                return {};
-            }
+            return await userUtils.getUserViaUsername(args);
         },
         allUsers: async (parent, args, { models }) => { 
             return await userUtils.allUsers();
         },
+        getUser: async (parents, args, { models, user }) => {
+            return await userUtils.getUser(user.id);
+        }
     },
     Mutation: {
         signup: async (parent, args, { models }) => {

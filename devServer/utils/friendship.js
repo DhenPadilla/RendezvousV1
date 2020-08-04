@@ -13,48 +13,48 @@ module.exports = {
                 include: 'friends'
             })
             if (!user) throw new Error('User not found!');
-            console.log(user.friends);
-            return user.friends;
+            return {
+                success: true,
+                message: 'Successfully retrieved friends for user' + user.username,
+                users: user.friends
+            }
         } catch (error) {
-          console.log(error);
+            return {
+                success: false,
+                errors: [
+                    {
+                        path: 'graphql/getFriendsForUser',
+                        message: error
+                    }
+                ]
+            }
         }
-    // (userId) => {
-    //     return User.findAll({
-    //         include: [
-    //             {
-    //                 model: User,
-    //                 as: 'friends',
-    //                 where: {
-    //                     user_id: userId
-    //                 }
-    //             }],
-    //         // where: {
-    //         //     friendId: userId
-    //         // }
-    //     }).then((friendships) => {
-    //         console.log(friendships);
-    //         return friendships;
-    //     })
     },
     createFriendship: async (userId, friendId) => {
-        const friendship = await Friendship.findOne({
-            where: {
-                userId: userId
-            }
-        });
-        console.log(friendship);
-        if(!friendship) {
+        try {
+            const friendship = await Friendship.findOne({
+                where: {
+                    userId: userId
+                }
+            });
+            if(friendship) throw new Error("Friendship already exists");
             Friendship.create({
                 userId: friendId,
                 friendId: userId
             })
-            return Friendship.create({
+            Friendship.create({
                 userId: userId,
                 friendId: friendId
             });
-        }
-        else {
-            return {}
+            return {
+                success: true
+            }
+            
+        } catch (error) {
+            return {
+                success: false,
+                error: error
+            } 
         }
     }
 }

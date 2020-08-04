@@ -7,36 +7,81 @@ module.exports = {
     create: function(args) {
         return User.create(args);
     },
-    getUserViaId: function(id) {
-        return User.findAll({
-            limit: 1,
-            where: {
-                id: id
-            },
-            order: [ [ 'createdAt', 'DESC' ]]
-        }).then((user) => {
-            return user[0];
-        })
+    getUser: async (id) => {
+        try {
+            const user = await User.findOne({
+                where: {
+                    id: id,
+                },
+                include: [
+                    'friends',
+                    // 'groups'
+                ]
+            })
+            if (!user) throw new Error('User not found!');
+            return {
+                success: true,
+                user: user,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                errors: [
+                    { 
+                        path: 'getUser',
+                        message: error
+                    }
+                ]
+            };
+        }
     },
-    getUserViaUsername: function(username) {
-        return User.findOne({
-            where: {
-                username: username
-            },
-        }).then((user) => {
-            return user;
-        });
+    getUserViaUsername: async (username) => {
+        try {
+            let user = await User.findOne({
+                where: {
+                    username: username
+                },
+            });
+            if(!user) throw new Error('Could not find user');
+            return {
+                success: true,
+                user: user
+            }
+        } catch (error) {
+            return {
+                success: false,
+                errors: [
+                    {
+                        path: 'graphql/getUserViaUsername',
+                        message: error
+                    }
+                ]
+            }
+        }
     },
-    getUserViaEmail: function(email) {
-        return User.findAll({
-            limit: 1,
-            where: {
-              email: email
-            },
-            order: [ [ 'createdAt', 'DESC' ]]
-          }).then((user) => {
-            return user[0];
-        }); 
+    getUserViaEmail: async (email) => {
+        try {
+            let user = await User.findOne({
+                where: {
+                    email: email
+                },
+            });
+            if(!user) throw new Error('Could not find user');
+            return {
+                success: true,
+                user: user
+            }
+        } catch (error) {
+            return {
+                success: false,
+                errors: [
+                    {
+                        path: 'graphql/getUserViaUsername',
+                        message: error
+                    }
+                ]
+            }
+        }
     },
     allUsers: function() {
         return User.findAll().then((users) => {
