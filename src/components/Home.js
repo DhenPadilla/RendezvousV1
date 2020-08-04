@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Navigation from './Navigation'
 import Map from './Map'
 import AsyncSelect from 'react-select/async';
+import UserContext from '../contexts/UserContext';
 
 import { useMutation, useQuery, gql } from '@apollo/client'
 
@@ -18,34 +19,40 @@ mutation($username:String!) {
 }`;
 
 
-const getFriendsForUser = gql`
-query {
-	getFriendsForUser {
-          id,
-          username,
-          firstName,
-          lastName
-	}
+const getUser = 
+gql`{
+    query {
+        getUser {
+            success
+            user {
+                id
+                firstName
+                lastName
+                username
+                friends {
+                    id
+                    firstName
+                    lastName
+                    username
+                }
+            }
+        }
+    }
 }`;
 
 function Home () {
-    const users = useRef([]);
 
-    const { loading, error, data } = useQuery(getFriendsForUser);
+    const { loading, error, data } = useQuery(getUser);
 
     if (loading) console.log('Loading...');
     if (error) console.log(`Error! ${error.message}`);
-    if (data) users.current = data.getFriendsForUser;
+    // if (data) user.current = data.getUser;
 
     return (
         <div>
-            <div>
-                {users.current.map(user => (
-                    <div key={user.id}>
-                        {user.username}, {user.firstName}
-                    </div>
-                ))}
-            </div>
+            <UserContext.Provider value={data}>
+
+            </UserContext.Provider>
             {/* <AsyncSelect
                 cacheOptions
                 loadOptions={loadOptions}
