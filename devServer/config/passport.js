@@ -21,7 +21,7 @@ const options = {
 
 const strategy = new JwtStrategy(options, async (payload, done) => {
     try {
-        let user = await userUtils.getUserViaId(payload.sub);
+        let { user } = await userUtils.getUser(payload.sub);
         console.log(user);
         return done(null, user);
     }
@@ -41,7 +41,7 @@ module.exports = (passport) => {
       
     passport.deserializeUser((id, done) => {
         try {
-            let user = userUtils.getUserViaId(id);
+            let { user } = userUtils.getUser(id);
             cb(null, user);
         }
         catch (err) {
