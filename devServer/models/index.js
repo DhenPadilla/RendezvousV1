@@ -18,7 +18,8 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
         acquire: 30000,
         idle: 10000,
     },
-    logging: true,
+    // logging: true,
+    logging:false,
     define: {
         underscored: true,
     }
@@ -43,7 +44,7 @@ const models = {
 // We define all models according to their files.
 Object.keys(models).forEach((model) => {
     if('associate' in models[model]) {
-        console.log("---- RUNNING ASSOCIATE! ----");
+        console.log(`-- RUNNING ASSOCIATE ON: ${model}! --`);
         models[model].associate(models);
     }
 });

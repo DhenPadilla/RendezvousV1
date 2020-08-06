@@ -1,5 +1,6 @@
-// src/App.js
+// src/Map.js
 import React, { Component } from 'react';
+import UserContext from '../contexts/UserContext';
 import GoogleMap from 'google-map-react';
 import axios from 'axios';
 import Pusher from 'pusher-js';
@@ -33,14 +34,16 @@ const Marker = ({ title }) => (
   </div>
 );
 
-class App extends Component {
+class Map extends Component {
+  static contextType = UserContext
+
   constructor(props) {
     super(props)
     this.state = {
       center: { lat: 5.6219868, lng: -0.23223 },
       locations: {},
       users_online: [],
-      current_user: ''
+      current_user: {}
     }
   }
 
@@ -61,11 +64,11 @@ class App extends Component {
         this.setState((prevState, props) => {
           let newState = { ...prevState };
           newState.center = location;
-          newState.locations[`${prevState.current_user}`] = location;
+          newState.locations[`${prevState.current_user.username}`] = location;
           return newState;
         });
         axios.post("/pusher/updateLocation", {
-          username: this.state.current_user,
+          username: this.state.current_user.username,
           location: location
         }).then(res => {
           if (res.status === 200) {
@@ -79,6 +82,11 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const user = this.context;
+    console.log(user);
+    this.setState({
+      current_user: user
+    });
     let pusher = new Pusher(process.env.REACT_APP_PUSHER_APP_KEY, {
       authEndpoint: "/pusher/auth",
       cluster: "eu"
@@ -125,7 +133,7 @@ class App extends Component {
       return (
         <Marker
           key={id}
-          title={`${username === this.state.current_user ? 'Dhen Padilla' : username + "'s location"}`}
+          title={`${username === this.state.current_user.username ? this.state.current_user.username : "Yo" + "'s location"}`}
           lat={this.state.locations[`${username}`].lat}
           lng={this.state.locations[`${username}`].lng}
         >
@@ -148,4 +156,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Map;

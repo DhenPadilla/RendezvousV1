@@ -9,7 +9,7 @@ import { ApolloClient, createHttpLink, ApolloProvider, InMemoryCache } from '@ap
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:5000/graphql',
+  uri: '/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -29,9 +29,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-
 function App() {
-    const storedJwt = localStorage.getItem('token');
     // const [jwt, setJwt] = useState(storedJwt || null);
     // const [user, setUser] = useState(null);
     // const [loginError, setLoginError] = useState(null);

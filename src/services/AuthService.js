@@ -27,8 +27,7 @@ const logout = (cb) => {
 }
 
 const isAuthenticated = async () => {
-    const authStr = localStorage.getItem('token')
-
+    const authStr = localStorage.getItem('token');
     if(authStr) {
         try {
             return axios.get(
@@ -37,6 +36,7 @@ const isAuthenticated = async () => {
                     'headers': { 'Authorization': authStr } 
                 }
             ).then((response) => {
+                console.log("(client): isAuthenticated: " + response);
                 return response.data.success;
             });
         }

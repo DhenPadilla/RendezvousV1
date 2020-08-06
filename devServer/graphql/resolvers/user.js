@@ -11,7 +11,16 @@ module.exports =  {
             return await userUtils.allUsers();
         },
         getUser: async (parents, args, { models, user }) => {
-            return await userUtils.getUser(user.id);
+            if(user) {
+                return await userUtils.getUser(user);
+            }
+            return {
+                success: false,
+                errors: {
+                    path: '/graphql/getUser',
+                    message: 'Could not find user / userId is not defined in graphql context'
+                }
+            };
         }
     },
     Mutation: {
@@ -19,9 +28,13 @@ module.exports =  {
             let res = await authService.signup(args);
             return res;
         },
-        login: async (parent, {username, password}, { models }) => {
-           let res = await authService.login(username, password);
-           return res;
+        login: async (parent, {username, password}, { req, models }) => {
+           let { success, message, token, refreshToken } = await authService.login(username, password);
+           return {
+               success,
+               message,
+               token
+           };
         }
     }
 };

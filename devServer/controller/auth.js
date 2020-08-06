@@ -7,8 +7,15 @@ const authService = require('../service/auth');
 // Route paths are prepended with '/auth'
 
 // Authenticate the user (protected)
-router.get('/authenticate', authService.auth(), (req, res, next) => {
-    res.status(200).json({ success: true, message: 'You are authorised!' });
+router.get('/authenticate', (req, res, next) => {
+    const accessToken = req.headers['authorization'].replace("Bearer ", "");
+    const data = authService.authenticate(accessToken);
+    if(data.sub) {
+        res.status(200).json({ success: true, message: 'You are authorised!' });
+    }
+    else {
+        res.status(400).json({ success: false, message: "No auth token provided"});
+    }
 });
 
 // Sign-up/register
@@ -23,7 +30,7 @@ router.post('/signup', async(req, res, next) => {
         if(!checkUsername) {
             userUtils.create(first_name, last_name, username, email, hashedPassword)
             .then(user => {
-                const jwt = authService.issueJWT(user);
+                const jwt = authService.issueJWT(user.id);
                 res.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires });
             }).catch((err) => {
                 res.status(401).send(err.message);
@@ -38,7 +45,7 @@ router.post('/signup', async(req, res, next) => {
         if(!checkEmail) {
             userUtils.create(first_name, last_name, username, email, hashedPassword)
             .then(user => {
-                const jwt = authService.issueJWT(user);
+                const jwt = authService.issueJWT(user.id);
                 res.json({ 
                     success: true, 
                     user: user, 
@@ -72,8 +79,7 @@ router.post('/login', async(req, res, next) => {
                 // if passwords match:
                 if(result) {
                     delete user['dataValues'].password;
-                    console.log(user);
-                    const token = authService.issueJWT(user);
+                    const token = authService.issueJWT(user.id);
                     res.cookie('token', token, { httpOnly: true });
                     res.status(200).json({
                         success: true,

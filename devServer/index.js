@@ -5,30 +5,24 @@ const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-const passport = require('passport');
-const { issueJwt, verify, issueJWT } = require('./service/auth');
+const authService = require('./service/auth');
 // const Pusher = require('pusher');
 
-// GraphQL:
+// --- GraphQL:
 const ApolloServer = require('apollo-server-express').ApolloServer;
 const { loadFilesSync } = require('@graphql-tools/load-files');
 const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
-
 // TypeDefs (Under: ./graphql/schema)
 const typesArray = loadFilesSync(path.join(__dirname, './graphql/schema'));
 const typeDefs = mergeTypeDefs(typesArray, { all: true });
-
 // Resolvers (Under: ./graphql/resolvers)
 const resolversArray = loadFilesSync(path.join(__dirname, './graphql/resolvers'));
 const resolvers = mergeResolvers(resolversArray);
 
 // Database config
 const models = require('./models/index');
-
-// Passport config
-require('./config/passport')(passport);
-
 const app = express();
+
 
 // Middleware
 app.use(compression());
@@ -37,10 +31,6 @@ app.use(cors('*'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
-app.use(passport.initialize());
-// Verifies the JWT before running any graphql queries
-// Extracts the user from the JWT and saves in req.user
-// app.use('/graphql', passport.authenticate('jwt', {session: false}));
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
     app.get('*', (req, res) => {
@@ -51,15 +41,27 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
 // ROUTES
 require('./routes')(app); // configure our routes
 
+app.use('/graphql', (req, _, next) => {
+    try {
+        if(req.headers['authorization']) {
+            const accessToken = req.headers['authorization'].replace("Bearer ", "");
+            const data = authService.authenticate(accessToken);
+            req.user = data.sub;
+        }
+    } catch (err) {
+        // TODO - define error and catch properly    
+    }
+    next();
+})
+
 // Apollo / GraphQL
 const apolloServer = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
-    context: ({ req }) => ({
+    context: ({ req, res }) => ({
+        res,
         models,
-        // Change this to JWT
-        // user: req.user
-        user: { id: 2 }
+        user: req.user ? req.user : null
     })
 });
 apolloServer.applyMiddleware({ app });

@@ -3,8 +3,7 @@ import Navigation from './Navigation'
 import Map from './Map'
 import AsyncSelect from 'react-select/async';
 import UserContext from '../contexts/UserContext';
-
-import { useMutation, useQuery, gql } from '@apollo/client'
+import { useQuery, gql } from '@apollo/client'
 
 const createFriendshipMutation = gql`
 mutation($username:String!) {
@@ -20,7 +19,7 @@ mutation($username:String!) {
 
 
 const getUser = 
-gql`{
+gql`
     query {
         getUser {
             success
@@ -35,34 +34,48 @@ gql`{
                     lastName
                     username
                 }
+            },
+            errors {
+                path,
+                message
             }
         }
     }
-}`;
+`;
 
 function Home () {
 
     const { loading, error, data } = useQuery(getUser);
 
-    if (loading) console.log('Loading...');
+    if (loading) {
+        return (
+            <div>
+                Loading...
+            </div>
+        )
+    }
+
     if (error) console.log(`Error! ${error.message}`);
-    // if (data) user.current = data.getUser;
 
-    return (
-        <div>
-            <UserContext.Provider value={data}>
+    if (data && data.getUser.success) {
+        // user.current = data.getUser.user;
+        return (
+            <div>
+                <UserContext.Provider value={data.getUser.user}>
+    
+                    {/* <AsyncSelect
+                        cacheOptions
+                        loadOptions={loadOptions}
+                        defaultOptions
+                        onInputChange={this.handleInputChange}
+                    /> */}
+                    <Navigation />
+                    <Map />
+                </UserContext.Provider>
+            </div>
+        )
+    }
 
-            </UserContext.Provider>
-            {/* <AsyncSelect
-                cacheOptions
-                loadOptions={loadOptions}
-                defaultOptions
-                onInputChange={this.handleInputChange}
-            /> */}
-            {/* <Navigation />
-            <Map /> */}
-        </div>
-    )
 }
 
 export default Home

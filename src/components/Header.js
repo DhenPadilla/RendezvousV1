@@ -3,39 +3,41 @@ import logo from '../styles/Rendezvous.svg'
 import OutsideNavigation from './OutsideNavigation'
 import Navigation from './Navigation'
 import { Link } from 'react-router-dom'
-import AuthService from '../services/AuthService'
+import { useQuery, gql } from '@apollo/client';
 
-function Header() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-    useEffect(() => {
-        let mounted = true
-        async function getAuth () {
-            try {
-                let authed = await AuthService.isAuthenticated();
-                if(mounted) {
-                    setIsAuthenticated(authed)
-                }
-            }
-            catch (err) {
-                console.log(err);
-                return false;
+const isAuthenticated = gql`
+    query {
+        isAuthenticated {
+            success,
+            errors {
+              path,
+              message
             }
         }
-        getAuth();
+    }
+`;
 
-        return () => { mounted = false }
-    }, [isAuthenticated]);
+function Header (props) {
+    // const { from } = props.history.location.state || { from: { pathname: "/" } };
+    // const [showLogin, setShowLogin] = useState()
 
+    const { data, loading, error } = useQuery(isAuthenticated);
+
+    if (loading) console.log("Loading..."); 
 
     let navbar
-    if (isAuthenticated) {
-        navbar = 
-        <Navigation setIsAuthenticated={setIsAuthenticated} />
+
+    if (data) {
+        console.log(data);
+        if (data.isAuthenticated.success) {
+            navbar = <Navigation />
+        }
+        else {
+            navbar =  <OutsideNavigation />
+        }
     }
     else {
-        navbar = 
-        <OutsideNavigation />
+        navbar =  <OutsideNavigation />
     }
 
     return (
