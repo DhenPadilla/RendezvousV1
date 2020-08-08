@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
 import { useMutation, gql } from '@apollo/client'
 import searchSvg from '../styles/search.svg'
+import AsyncSelect from 'react-select/async';
 
 const searchForUserQuery = gql`
     query ($search:String!) {
@@ -15,23 +16,37 @@ const searchForUserQuery = gql`
 function Search () {
     const [searchInput, setSearchInput] = useState("");
 
-    const filterUsers = async (input) => {
-        let users = await 
-        colourOptions.filter(i =>
-            i.label.toLowerCase().includes(inputValue.toLowerCase())
-        );
-    };
+    // const filterUsers = async (input) => {
+    //     let users = await 
+    //     colourOptions.filter(i =>
+    //         i.label.toLowerCase().includes(inputValue.toLowerCase())
+    //     );
+    // };
 
     const promiseOptions = inputValue =>
         new Promise(resolve => {
             setTimeout(() => {
-                resolve(filterColors(inputValue));
+                // resolve(filterColors(inputValue));
+                resolve();
             }, 1000);
         });
 
+    const customStyles = {
+        control: base => ({
+            ...base,
+            height: 50,
+            minHeight: 50,
+        }),
+    };
+
 
     return (
-        <AsyncSelect cacheOptions defaultOptions loadOptions={promiseOptions} />
+            <AsyncSelect 
+                className="z-10 ml-20 w-64 -mt-24 h-20 rounded-sm" 
+                cacheOptions 
+                defaultOptions 
+                loadOptions={promiseOptions}
+                styles={customStyles}>
         { /*<div className="block float-right h-full w-1/3 border-solid border-1">
             <div className="w-full max-w-xs">
                 <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
@@ -62,5 +77,8 @@ function Search () {
                        onChange={e => setSearchInput(e.target.value)}/>
             </div>
         </div> */}
+        </AsyncSelect>
     )
 }
+
+export default Search

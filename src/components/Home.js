@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Navigation from './Navigation'
 import Map from './Map'
-import AsyncSelect from 'react-select/async';
 import UserContext from '../contexts/UserContext';
+import Search from './Search';
 import { useQuery, gql } from '@apollo/client'
 
 const createFriendshipMutation = gql`
@@ -62,13 +62,13 @@ function Home () {
         return (
             <div>
                 <UserContext.Provider value={data.getUser.user}>
-    
                     {/* <AsyncSelect
                         cacheOptions
                         loadOptions={loadOptions}
                         defaultOptions
                         onInputChange={this.handleInputChange}
                     /> */}
+                    <Search />
                     <Navigation />
                     <Map />
                 </UserContext.Provider>
