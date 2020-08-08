@@ -25,8 +25,7 @@ module.exports =  {
     },
     Mutation: {
         signup: async (parent, args, { models }) => {
-            let res = await authService.signup(args);
-            return res;
+            return await authService.signup(args);
         },
         login: async (parent, {username, password}, { req, models }) => {
            let { success, message, token, refreshToken } = await authService.login(username, password);
@@ -35,6 +34,20 @@ module.exports =  {
                message,
                token
            };
+        },
+        updateStatus: async(parent, { status }, { user }) => {
+            if(user) {
+                return await userUtils.updateStatus(status, user);
+            }
+            else {
+                return {
+                    success: false,
+                    errors: [{
+                        path: '/graphql/changeStatus',
+                        message: 'Unable to change status of undefined user'
+                    }]
+                }
+            }
         }
     }
 };

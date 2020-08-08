@@ -53,6 +53,8 @@ module.exports =
             username: String!,
             password: String!
         ): LoginResponse
+
+        updateStatus(status: Int!): UserResponse!
     }
 `;
 

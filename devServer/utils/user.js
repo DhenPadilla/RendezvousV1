@@ -4,7 +4,7 @@ const { User } = require('../models/index');
 const Op = require('sequelize').Op;
 
 module.exports = {
-    create: function(args) {
+    create: (args) => {
         return User.create(args);
     },
     getUser: async (id) => {
@@ -83,9 +83,37 @@ module.exports = {
             }
         }
     },
-    allUsers: function() {
+    allUsers: () => {
         return User.findAll().then((users) => {
             return users
         });
+    },
+    updateStatus: async(status, userId) => {
+        try {
+            const updatedUser = await User.update({
+                status: status,
+              }, {
+                where: { id: userId },
+                // Returns postgres object (:D No need for secondary findOne() call)
+                returning: true,
+                // Returns the plain object & no unnecessary mess -- Again.. Cool :D 
+                plain: true
+              });
+            if (updatedUser[0] == 0) throw new Error('Could not update user status');
+            return {
+                success: true,
+                user: updatedUser[1].dataValues
+            }
+        } catch (error) {
+            return {
+                success: false,
+                errors: [
+                    {
+                        path: 'graphql/updateStatus',
+                        message: error
+                    }
+                ]
+            }
+        }
     }
 }
