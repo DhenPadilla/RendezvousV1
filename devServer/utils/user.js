@@ -14,7 +14,13 @@ module.exports = {
                     id: id,
                 },
                 include: [
-                    'friends',
+                    {
+                        model: User,
+                        as: 'friends',
+                        where: {
+                            status: 0
+                        }
+                    }
                     // 'groups'
                 ]
             })
