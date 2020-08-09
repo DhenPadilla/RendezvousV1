@@ -56,6 +56,10 @@ module.exports =
 
         updateStatus(status: Int!): UserResponse!
     }
+
+    type Subscription {
+        updatedStatus: User!
+    }
 `;
 
 //     type Query {

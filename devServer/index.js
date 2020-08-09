@@ -1,3 +1,4 @@
+const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -9,7 +10,7 @@ const authService = require('./service/auth');
 // const Pusher = require('pusher');
 
 // --- GraphQL:
-const ApolloServer = require('apollo-server-express').ApolloServer;
+const { ApolloServer, PubSub } = require('apollo-server-express');
 const { loadFilesSync } = require('@graphql-tools/load-files');
 const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
 // TypeDefs (Under: ./graphql/schema)
@@ -41,30 +42,79 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
 // ROUTES
 require('./routes')(app); // configure our routes
 
-app.use('/graphql', (req, _, next) => {
-    try {
-        if(req.headers['authorization']) {
-            const accessToken = req.headers['authorization'].replace("Bearer ", "");
-            const data = authService.authenticate(accessToken);
-            req.user = data.sub;
-        }
-    } catch (err) {
-        // TODO - define error and catch properly    
-    }
-    next();
-})
+// -- GraphQL --
 
-// Apollo / GraphQL
+// PubSub Instance
+const pubSub = new PubSub();
+
+// Authorization middleware for /graphql endpoint
+// app.use('/graphql', (req, _, next) => {
+//     try {
+//         if(req.headers['authorization']) {
+//             const accessToken = req.headers['authorization'].replace("Bearer ", "");
+//             const data = authService.authenticate(accessToken);
+//             req.user = data.sub;
+//         }
+//     } catch (err) {
+//         // TODO - define error and catch properly    
+//     }
+//     next();
+// })
+
+const handleAuth = (token) => {
+    try {
+        const accessToken = token.replace("Bearer ", "");
+        // sub == user_id
+        const { sub } = authService.authenticate(accessToken);
+        return sub;
+    } catch (err) {
+        return null;
+    }
+}
+
+// Apollo / GraphQL middleware init
 const apolloServer = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
-    context: ({ req, res }) => ({
-        res,
-        models,
-        user: req.user ? req.user : null
-    })
+    subscriptions: {
+        onConnect: (connectionParams) => {
+          if (connectionParams.authorization) {
+            const id = handleAuth(connectionParams.authorization)
+            return {
+                user: id
+            }
+          }
+    
+          throw new Error('Missing auth token!');
+        },
+      },
+    context: ({ req, res, connection }) =>  {
+        let currentUser = null;
+        if (connection) {
+            // check connection for metadata (through WebSocket/Subscriptions)
+            currentUser = connection.user;
+        } 
+        else {
+            if (req.headers['authorization']) {
+                const id = handleAuth(req.headers['authorization'])
+                currentUser = id;
+            }
+            else {
+                // Throw?                
+            }
+        }
+        return {
+            res,
+            models,
+            pubSub,
+            user: currentUser
+        }
+    }
 });
+
+const httpServer = http.createServer(app);
 apolloServer.applyMiddleware({ app });
+apolloServer.installSubscriptionHandlers(httpServer);
 
 
 const PORT = process.env.PORT || 5000;
@@ -76,7 +126,14 @@ const PORT = process.env.PORT || 5000;
 models.sequelize.sync().then(() => {
 // models.sequelize.sync({ force: true }).then(() => {
     console.log("Sequelize successfully synced with DB! ✅");
-    app.listen(PORT, console.log(`Server started on port ${PORT}`));
+    httpServer.listen(PORT, () => {
+        console.log(
+          `🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`,
+        );
+        console.log(
+          `🚀 Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`,
+        );
+    });
 })
 
 

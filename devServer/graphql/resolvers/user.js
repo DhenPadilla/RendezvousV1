@@ -1,6 +1,7 @@
 const userUtils = require('../../utils/user');
 const authService = require('../../service/auth');
 const friendshipUtils = require('../../utils/friendship');
+const subs = require('../subscriptions.js');
 
 module.exports =  {
     Query: {
@@ -35,9 +36,16 @@ module.exports =  {
                token
            };
         },
-        updateStatus: async(parent, { status }, { user }) => {
+        updateStatus: async(parent, { status }, { user, pubSub }) => {
             if(user) {
-                return await userUtils.updateStatus(status, user);
+                const result = await userUtils.updateStatus(status, user);
+                if(result.success) {
+                    // TODO - withFilter() friendships of user
+                    pubSub.publish(subs.UPDATE_STATUS, {
+                        updatedStatus: result.user
+                    })
+                }
+                return result;
             }
             else {
                 return {
@@ -48,6 +56,11 @@ module.exports =  {
                     }]
                 }
             }
+        }
+    },
+    Subscription: {
+        updatedStatus: {
+            subscribe: (_, __, { pubSub }) => pubSub.asyncIterator(subs.UPDATE_STATUS)
         }
     }
 };
