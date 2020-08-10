@@ -78,16 +78,16 @@ const apolloServer = new ApolloServer({
     resolvers: resolvers,
     subscriptions: {
         onConnect: (connectionParams) => {
-          if (connectionParams.authorization) {
-            const id = handleAuth(connectionParams.authorization)
-            return {
-                user: id
+            if (connectionParams.authorization) {
+                const id = handleAuth(connectionParams.authorization)
+                return {
+                    user: id
+                }
             }
-          }
-    
-          throw new Error('Missing auth token!');
+
+            throw new Error('Missing auth token!');
         },
-      },
+    },
     context: ({ req, res, connection }) =>  {
         let currentUser = null;
         if (connection) {
