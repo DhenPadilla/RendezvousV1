@@ -25,27 +25,27 @@ function Header (props) {
 
     if (loading) console.log("Loading..."); 
 
-    let navbar
+    let navbar = 
+    <div className="flex items-center justify-between ml-20 bg-transparent">
+        <Link to="/home">
+            <img className="fill-current h-6 w-auto mr-2" src={logo} alt="Logo" />
+        </Link>
+
+        <OutsideNavigation />
+    </div> 
 
     if (data) {
-        console.log(data);
         if (data.isAuthenticated.success) {
-            navbar = <Navigation />
+            navbar = 
+            <div className="flex items-center justify-between ml-20 bg-transparent">
+                {/* <Navigation /> */}
+            </div>
         }
-        else {
-            navbar =  <OutsideNavigation />
-        }
-    }
-    else {
-        navbar =  <OutsideNavigation />
     }
 
     return (
-        <div className="flex items-center justify-between ml-20 bg-transparent">
-            <Link to="/home">
-                <img className="fill-current h-6 w-auto mr-2" src={logo} alt="Logo" />
-            </Link>
-
+        // <div className="flex items-center justify-between ml-20 bg-transparent">
+        <div>
             { navbar }
         </div>
     )

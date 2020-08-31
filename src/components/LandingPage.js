@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom'
 import Login from './Login'
 import { useQuery, gql } from '@apollo/client';
 import Signup from './Signup';
+import Header from './Header';
 
 const isAuthenticated = gql`
     query {

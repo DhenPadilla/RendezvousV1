@@ -42,7 +42,7 @@ function Search () {
 
     return (
             <AsyncSelect 
-                className="z-10 ml-20 w-64 -mt-24 h-20 rounded-sm" 
+                className="ml-20 w-64 mt-10 h-20 rounded-sm" 
                 cacheOptions 
                 defaultOptions 
                 loadOptions={promiseOptions}

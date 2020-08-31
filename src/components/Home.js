@@ -3,6 +3,7 @@ import Navigation from './Navigation'
 import Map from './Map'
 import UserContext from '../contexts/UserContext';
 import Search from './Search';
+import Toggle from './Toggle';
 import { useQuery, gql } from '@apollo/client'
 
 const createFriendshipMutation = gql`
@@ -68,9 +69,12 @@ function Home () {
                         defaultOptions
                         onInputChange={this.handleInputChange}
                     /> */}
-                    <Search />
-                    <Navigation />
-                    <Map />
+                    <div className="flex items-center justify-between flex-wrap bg-transparent z-50">
+                        <Search />
+                        <Toggle />
+                        <Navigation />
+                    </div>
+                    {/* <Map /> */}
                 </UserContext.Provider>
             </div>
         )
