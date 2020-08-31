@@ -1,10 +1,11 @@
-import React , { useState } from 'react';
+import React , { useState, useContext } from 'react';
+import UserContext from '../contexts/UserContext';
 import classnames from 'classnames';
 import { useMutation, gql } from '@apollo/client'
 
-const updateStatus = gql`
-mutation {
-    updateStatus(status: 1) {
+const updateStatusMutation = gql`
+mutation($status:Int!) {
+    updateStatus(status: $status) {
       success,
       user {
         status
@@ -14,12 +15,20 @@ mutation {
         message
       }
     }
-}`
+ }`
 
 function Toggle () {
-    const [status, setStatus] = useState(false)
-    
-    const toggleStatus = () => {
+    const [updateStatus, { data }] = useMutation(updateStatusMutation);
+    const user = useContext(UserContext);
+    const [status, setStatus] = useState(user['status']);
+    console.log(status);
+
+    const toggleStatus = async (e) => {
+        updateStatus({ variables: {
+            //turns 'true'/'false' to: 0 / 1
+            status: +(!status)
+          }
+        })
         setStatus(!status);
     }
 
@@ -57,26 +66,20 @@ function Toggle () {
     )
 
     return (
-        <div className="md:flex md:items-left mb-6">
-            <div>
-            {/* <div className="w-full border-black block md:hidden flex-grow lg:flex lg:items-center lg:w-auto"> */}
-                <div className="text-md lg:flex-grow">
-                    {/* <button onClick={on} className="bg-transparent float-right block mt-4 lg:inline-block lg:mt-0 text-black hover:bg-black hover:border-transparent hover:text-white border-solid border border-black rounded py-3 px-6 mt-4 mr-4 lg:inline-block lg:mt-0 text-black hover:text-teal mr-4 font-sofia font-normal tracking-wider">
-                        on
-                    </button> */}
-                    <label for="checked" class="mt-3 inline-flex items-center cursor-pointer">
-                        <span className="relative">
-                            <span className={toggleClassOuter}></span>
-                            <span className={toggleClassInner}>
-                                <input id="checked" 
-                                       type="checkbox" 
-                                       className="absolute opacity-0 w-0 h-0"
-                                       onClick={toggleStatus} />
-                            </span>
+        <div className="md:flex md:items-left ml-6">
+            <div className="text-md lg:flex-grow">
+                <label htmlFor="checked" className="mt-3 inline-flex items-center cursor-pointer">
+                    <span className="relative">
+                        <span className={toggleClassOuter}></span>
+                        <span className={toggleClassInner}>
+                            <input id="checked" 
+                                    type="checkbox" 
+                                    className="absolute opacity-0 w-0 h-0"
+                                    onClick={toggleStatus} />
                         </span>
-                        <span className="ml-3 text-sm font-sofia">{ status ? 'online' : 'offline'}</span>
-                    </label>
-                </div>
+                    </span>
+                    <span className="ml-3 text-sm font-sofia">{ status ? 'online' : 'offline'}</span>
+                </label>
             </div>
         </div>
     )

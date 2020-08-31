@@ -29,6 +29,7 @@ gql`
                 firstName
                 lastName
                 username
+                status
                 friends {
                     id
                     firstName
@@ -63,16 +64,14 @@ function Home () {
         return (
             <div>
                 <UserContext.Provider value={data.getUser.user}>
-                    {/* <AsyncSelect
-                        cacheOptions
-                        loadOptions={loadOptions}
-                        defaultOptions
-                        onInputChange={this.handleInputChange}
-                    /> */}
                     <div className="flex items-center justify-between flex-wrap bg-transparent z-50">
-                        <Search />
-                        <Toggle />
-                        <Navigation />
+                        <div className="w-1/2 flex justify-start items-center">
+                            <Search />
+                            <Toggle />
+                        </div>
+                        <div>
+                            <Navigation />
+                        </div>
                     </div>
                     {/* <Map /> */}
                 </UserContext.Provider>
