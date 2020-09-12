@@ -19,7 +19,8 @@ module.exports =
     }
 
     type Mutation {
-        createFriendshipFromUsername(username: String!): FriendshipResponse!
+        createFriendRequestWithUsername(username: String!): FriendshipResponse!
+        acceptFriendRequestWithUsername(username: String!): FriendshipResponse!
     }
 `
 ;

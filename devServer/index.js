@@ -47,20 +47,6 @@ require('./routes')(app); // configure our routes
 // PubSub Instance
 const pubSub = new PubSub();
 
-// Authorization middleware for /graphql endpoint
-// app.use('/graphql', (req, _, next) => {
-//     try {
-//         if(req.headers['authorization']) {
-//             const accessToken = req.headers['authorization'].replace("Bearer ", "");
-//             const data = authService.authenticate(accessToken);
-//             req.user = data.sub;
-//         }
-//     } catch (err) {
-//         // TODO - define error and catch properly    
-//     }
-//     next();
-// })
-
 const handleAuth = (token) => {
     try {
         const accessToken = token.replace("Bearer ", "");
