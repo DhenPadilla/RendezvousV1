@@ -47,6 +47,7 @@ module.exports = {
                 where: {
                     username: username
                 },
+                raw: true
             });
             if(!user) throw new Error('Could not find user');
             return {

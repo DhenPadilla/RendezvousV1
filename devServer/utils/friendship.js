@@ -107,7 +107,10 @@ module.exports = {
                     status: 1
                 }
             });
-            if(friendship) return { success: true }
+            if(friendship) {
+                // Friendship is found
+                return { success: true }
+            }
             return { success: false }
         } catch (error) {
             console.log("Error thrown...");

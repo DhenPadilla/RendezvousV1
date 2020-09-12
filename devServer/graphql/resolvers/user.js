@@ -2,6 +2,7 @@ const userUtils = require('../../utils/user');
 const authService = require('../../service/auth');
 const friendshipUtils = require('../../utils/friendship');
 const subs = require('../subscriptions.js');
+const { withFilter } = require('apollo-server-express');
 
 module.exports =  {
     Query: {
@@ -40,9 +41,9 @@ module.exports =  {
             if(user) {
                 const result = await userUtils.updateStatus(status, user);
                 if(result.success) {
-                    // TODO - withFilter() friendships of user
                     pubSub.publish(subs.UPDATE_STATUS, {
-                        updatedStatus: result.user
+                        updatedStatus: result.user,
+                        user: result.user
                     })
                 }
                 return result;
@@ -56,11 +57,16 @@ module.exports =  {
                     }]
                 }
             }
-        }
+        },
     },
     Subscription: {
-        updatedStatus: {
-            subscribe: (_, __, { pubSub }) => pubSub.asyncIterator(subs.UPDATE_STATUS)
+        updatedStatus: { 
+            subscribe: withFilter((_, __, { pubSub }) => {
+                return pubSub.asyncIterator(subs.UPDATE_STATUS)
+            }, async (payload, _, { user }) => {
+                const isFriend = await friendshipUtils.checkFriendship(user, payload.user.id)
+                return isFriend.success;
+            })
         }
     }
 };

@@ -78,7 +78,7 @@ const apolloServer = new ApolloServer({
         let currentUser = null;
         if (connection) {
             // check connection for metadata (through WebSocket/Subscriptions)
-            currentUser = connection.user;
+            currentUser = connection.context.user;
         } 
         else {
             if (req.headers['authorization']) {
