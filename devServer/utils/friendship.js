@@ -65,7 +65,10 @@ module.exports = {
                     status: 1
                 }
             });
-            if(friendship) throw new Error("Friendship already exists");
+
+            if(!friendship.isNewRecord) {
+                throw new Error("Friendship already exists");
+            }
 
             // First find the request and change to status: 1 - Friends
             let friendRequest = await Friendship.findOne({ 
@@ -76,7 +79,6 @@ module.exports = {
                 } 
             })
             if(friendRequest) {
-                console.log("Friend request found!", friendship);
                 friendRequest.update({
                     status: 1
                 })
@@ -90,7 +92,7 @@ module.exports = {
                 }
             }
             throw new Error('Could not find friend request');
-            
+
         } catch (error) {
             return {
                 success: false,

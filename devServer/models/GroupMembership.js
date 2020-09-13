@@ -7,7 +7,8 @@ module.exports = (sequelize) => {
         approveAt: {
             type: Sequelize.DATE,
             allowNull: true
-        }
+        },
+        userStatus: Sequelize.INTEGER,
     })
 
     return GroupMembership;

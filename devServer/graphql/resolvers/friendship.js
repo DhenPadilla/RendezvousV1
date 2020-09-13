@@ -44,7 +44,7 @@ module.exports =  {
                     const friend = await userUtils.getUserViaUsername(username);
                     if (!friend) throw new Error('User not found!');
                     const friendship = await friendshipUtils.acceptFriendRequest(user, friend.user.id);
-                    if (!friendship) throw new Error(friendship.error);
+                    if (!friendship.success) throw new Error(friendship.error);
                     return {
                         success: true,
                         message: "Successfully created new friendship!"

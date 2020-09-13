@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize) => {
     const Group = sequelize.define('group', {
         owner: {
-            type: Sequelize.STRING
+            type: Sequelize.INTEGER
         },
         name: {
             type: Sequelize.STRING
@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
     
     Group.associate = (models) => {
         Group.belongsToMany(models.User, {
-            through: 'group_memberships',
+            through: models.GroupMembership,
             foreignKey: {
                 name: 'groupId',
                 field: 'group_id'

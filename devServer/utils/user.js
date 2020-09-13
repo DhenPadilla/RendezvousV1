@@ -18,10 +18,11 @@ module.exports = {
                         model: User,
                         as: 'friends',
                         where: {
-                            status: 0
-                        }
+                            status: 1,
+                        },
+                        required: false
                     }
-                    // 'groups'
+                    // TODO - 'groups'
                 ]
             })
             if (!user) throw new Error('User not found!');

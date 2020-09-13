@@ -1,12 +1,14 @@
+const groupUtils = require('../../utils/group');
+const { AuthenticationError } = require('apollo-server-express');
+
 module.exports =  {
     Mutation: {
-        createGroup: async (parent, args, {models, user}) => {
-            try {
-                await models.Group(models.sequelize).create( { ...args, owner: user.id });
-                return true;
-            } catch(err) {
-                console.log(err);
-                return false;
+        createGroup: async (parent, args, { user }) => {
+            if (user) {
+                return await groupUtils.create({ ...args, owner: user });
+            }
+            else {
+                throw new AuthenticationError('Cannot create a group from an unknown user');
             }
         },
     },

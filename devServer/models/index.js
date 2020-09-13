@@ -18,8 +18,8 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
         acquire: 30000,
         idle: 10000,
     },
-    logging: true,
-    // logging: false,
+    // logging: true,
+    logging: false,
     define: {
         underscored: true,
     }

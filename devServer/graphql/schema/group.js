@@ -7,8 +7,15 @@ module.exports =
         users: [User!]!
     }
 
+    type GroupResponse {
+        success: Boolean!,
+        message: String,
+        group: Group,
+        errors: [Error!]
+    }
+    
     type Mutation {
-        createGroup(name: String!): Boolean!
+        createGroup(name: String!): GroupResponse!
     }
 `
 ;
