@@ -1,5 +1,7 @@
 # An app to locate friends, the easy way. 
 
+> ## EDIT: As of 13 Sept 2020, progress has been moved to a private repo
+
 ### Built with ReactJS, Node/Express, GraphQL & Postgres
 
 ## For developers: 
